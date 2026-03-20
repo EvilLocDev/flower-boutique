@@ -5,7 +5,9 @@ plugins {
 
 android {
     namespace = "com.example.flowerboutique"
-    compileSdk = 36
+    compileSdk {
+        version = release(36)
+    }
 
     defaultConfig {
         applicationId = "com.example.flowerboutique"
@@ -31,11 +33,6 @@ android {
             )
         }
     }
-
-    buildFeatures {
-        viewBinding = true
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
