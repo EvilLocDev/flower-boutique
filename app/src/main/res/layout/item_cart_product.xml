@@ -1,0 +1,113 @@
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:backgroundTint="@android:color/white"
+    android:layout_marginVertical="10sp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="0sp">
+        <!-- Hình ảnh sản phẩm -->
+        <ImageView
+            android:id="@+id/product_img"
+            android:layout_width="140dp"
+            android:layout_height="0sp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_placeholder"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/detail_section"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingHorizontal="10sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/product_img"
+            app:layout_constraintTop_toTopOf="parent">
+            <!-- Tên sản phẩm -->
+            <TextView
+                android:id="@+id/product_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tên sản phẩm"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+
+            <!-- Giá sản phẩm -->
+            <TextView
+                android:id="@+id/product_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10sp"
+                android:text="$83.97"
+                android:textColor="#222222"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <!-- Nút giảm số lượng -->
+                <Button
+                    app:shapeAppearance="@style/RoundedSquare.30Percent"
+                    android:id="@+id/btnDecreaseQuantity"
+                    style="@style/Button.IconOnly.Filled"
+                    android:layout_width="29sp"
+                    android:layout_height="29sp"
+                    app:icon="@drawable/ic_minus"
+                    app:iconSize="25sp"
+                    app:iconTint="@color/white"
+                    app:strokeColor="@android:color/transparent" />
+                <!-- Số lượng sản phẩm -->
+
+                <TextView
+                    android:id="@+id/product_quantity"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textColor="#222222"
+                    android:textSize="24sp"
+                    app:layout_constraintBottom_toBottomOf="@id/btnDecreaseQuantity"
+                    app:layout_constraintEnd_toStartOf="@id/btnIncreaseQuantity"
+                    app:layout_constraintStart_toEndOf="@id/btnDecreaseQuantity"
+                    app:layout_constraintTop_toTopOf="@id/btnDecreaseQuantity" />
+
+                <!-- Nút tăng số lượng -->
+                <Button
+                    android:id="@+id/btnIncreaseQuantity"
+                    style="@style/Button.IconOnly.Filled"
+                    app:shapeAppearance="@style/RoundedSquare.30Percent"
+                    android:layout_width="29sp"
+                    android:layout_height="29sp"
+                    app:icon="@drawable/ic_plus"
+                    app:iconSize="25sp"
+                    app:iconTint="@color/white"
+                    app:strokeColor="@android:color/transparent" />
+                <Button
+                    android:id="@+id/btn_trash"
+                    style="@style/Button.IconOnly.Outlined"
+                    android:layout_width="29sp"
+                    android:layout_height="29sp"
+                    android:backgroundTint="@android:color/transparent"
+                    app:icon="@drawable/ic_trash"
+                    app:iconSize="29sp"
+                    android:layout_marginHorizontal="15sp"
+                    app:iconTint="@android:color/holo_red_dark"
+                    app:strokeColor="@android:color/transparent" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>
