@@ -1,9 +1,82 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.FlowerBoutique" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Base.Theme.FlowerBoutique" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="colorPrimary">#AB886D</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOutline">?attr/colorPrimary</item>
+        <item name="colorSecondaryContainer">#F7F2ED</item>
+        <item name="colorSurfaceContainerLow">#FFE8D6</item>
+        <item name="colorOnSecondaryContainer">?attr/colorPrimary</item>
+        <item name="colorSurface">?attr/colorSecondaryContainer</item>
+        <item name="colorOnSurface">#84532E</item>
+        <item name="colorOnSurfaceVariant">?attr/colorOnSurface</item>
+        <item name="colorSurfaceContainer">#FFFBF8</item>
+        <item name="android:windowBackground">@color/white</item>
     </style>
 
-    <style name="Theme.FlowerBoutique" parent="Base.Theme.FlowerBoutique" />
+    <style name="Theme.FlowerBoutique" parent="Base.Theme.FlowerBoutique">
+    </style>
+
+    <style name="ShapeAppearance.FlowerStore.ProductDetail" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">30sp</item>
+        <item name="cornerSizeBottomRight">0sp</item>
+        <item name="cornerSizeBottomLeft">0sp</item>
+    </style>
+
+    <style name="RoundedSquare">
+        <item name="cornerFamily">rounded</item>
+    </style>
+    <style name="RoundedSquare.10Percent">
+        <item name="cornerSize">10%</item>
+    </style>
+    <style name="RoundedSquare.20Percent">
+        <item name="cornerSize">20%</item>
+    </style>
+    <style name="RoundedSquare.30Percent">
+        <item name="cornerSize">30%</item>
+    </style>
+    <style name="RoundedSquare.50Percent">
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="RoundedSquare.Input" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerSize">50%</item>
+        <item name="cornerFamily">rounded</item>
+    </style>
+
+    <style name="Button.IconOnly.Outlined" parent="Widget.Material3.Button.IconButton.Outlined">
+        <item name="iconPadding">0sp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="android:insetTop">0sp</item>
+        <item name="android:insetBottom">0sp</item>
+        <item name="android:insetLeft">0sp</item>
+        <item name="android:insetRight">0sp</item>
+    </style>
+
+    <style name="Button.IconOnly.Filled" parent="Widget.Material3.Button.IconButton.Filled">
+        <item name="iconPadding">0sp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="android:insetTop">0sp</item>
+        <item name="android:insetBottom">0sp</item>
+        <item name="android:insetLeft">0sp</item>
+        <item name="android:insetRight">0sp</item>
+    </style>
+
+    <style name="Button.IconOnly.Elevated" parent="Widget.Material3.Button.IconButton.Filled.Tonal">
+        <item name="iconPadding">0sp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="android:insetTop">0sp</item>
+        <item name="android:insetBottom">0sp</item>
+        <item name="android:insetLeft">0sp</item>
+        <item name="android:insetRight">0sp</item>
+    </style>
+
+
+    <style name="Divider.Horizontal" parent="Widget.Material3.MaterialDivider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">4sp</item>
+        <item name="android:backgroundTint">#00FFFFFF</item>
+    </style>
+
 </resources>
