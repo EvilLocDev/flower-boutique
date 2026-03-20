@@ -1,8 +1,39 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.FlowerBoutique" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<!--    <style name="Base.Theme.FlowerBoutique" parent="Theme.Material3.DayNight.NoActionBar">-->
+<!--        &lt;!&ndash; Customize your light theme here. &ndash;&gt;-->
+<!--        &lt;!&ndash; <item name="colorPrimary">@color/my_light_primary</item> &ndash;&gt;-->
+<!--    </style>-->
+
+    <style name="Button.IconOnly.Outlined" parent="Widget.Material3.Button.IconButton.Outlined">
+        <item name="iconPadding">0sp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="android:insetTop">0sp</item>
+        <item name="android:insetBottom">0sp</item>
+        <item name="android:insetLeft">0sp</item>
+        <item name="android:insetRight">0sp</item>
+    </style>
+
+    <style name="Base.Theme.FlowerBoutique" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="colorPrimary">#AB886D</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOutline">?attr/colorPrimary</item>
+        <item name="colorSecondaryContainer">#F7F2ED</item>
+        <item name="colorSurfaceContainerLow">#FFE8D6</item>
+        <item name="colorOnSecondaryContainer">?attr/colorPrimary</item>
+        <item name="colorSurface">?attr/colorSecondaryContainer</item>
+        <item name="colorOnSurface">#84532E</item>
+        <item name="colorOnSurfaceVariant">?attr/colorOnSurface</item>
+        <item name="colorSurfaceContainer">#FFFBF8</item>
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+
+    <style name="Theme.FlowerStore" parent="Base.Theme.FlowerBoutique"/>
+
+    <style name="RoundedSquare.30Percent" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">30%</item>
     </style>
 
     <style name="Theme.FlowerBoutique" parent="Base.Theme.FlowerBoutique" />
