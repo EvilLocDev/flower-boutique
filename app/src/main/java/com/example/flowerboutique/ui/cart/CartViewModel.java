@@ -30,9 +30,9 @@ public class CartViewModel extends ViewModel {
 
     // Tạo dữ liệu giả
     private void loadDummyData() {
-        currentList.add(new CartItem("1", "Bó hoa Hồng Đỏ", 500000, 2));
-        currentList.add(new CartItem("2", "Lẵng hoa Khai Trương", 1200000, 1));
-        currentList.add(new CartItem("3", "Bó hoa Hướng Dương", 350000, 3));
+        currentList.add(new CartItem("1", "", "Bó hoa Hồng Đỏ",500000, 2, 1));
+        currentList.add(new CartItem("2", "", "Lẵng hoa Khai Trương", 1200000, 1, 2));
+        currentList.add(new CartItem("3", "", "Bó hoa Hướng Dương", 350000, 3, 3));
 
         cartListLiveData.setValue(currentList);
         calculateTotal();

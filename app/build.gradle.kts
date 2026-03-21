@@ -15,6 +15,37 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String",
+            "CLOUDINARY_API_KEY",
+            "\"${providers.gradleProperty("CLOUDINARY_API_KEY").get()}\""
+        )
+        buildConfigField(
+            "String",
+            "CLOUDINARY_KEY_SECRET",
+            "\"${providers.gradleProperty("CLOUDINARY_KEY_SECRET").get()}\""
+        )
+        buildConfigField(
+            "String",
+            "CLOUDINARY_NAME",
+            "\"${providers.gradleProperty("CLOUDINARY_NAME").get()}\""
+        )
+
+        buildConfigField(
+            "String",
+            "ZALO_PAY_APP_ID",
+            "\"${
+                if (providers.gradleProperty("ZALO_PAY_APP_ID")
+                        .isPresent()
+                ) providers.gradleProperty("ZALO_PAY_APP_ID").get() else "0"
+            }\""
+        )
+        buildConfigField(
+            "String",
+            "ZALO_PAY_KEY1",
+            "\"${providers.gradleProperty("ZALO_PAY_KEY1").get()}\""
+        )
     }
 
     buildFeatures {
@@ -50,8 +81,13 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 
     implementation(platform("com.google.firebase:firebase-bom:34.10.0"))
+    implementation(files("../zpdk-release-v3.1.aar"))
+    implementation(platform("com.google.firebase:firebase-bom:34.10.0"))
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-auth")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
     //Dung giao dien dang nhap co san cua firebase
     implementation("com.firebaseui:firebase-ui-auth:9.1.1")
     annotationProcessor(libs.room.compiler)
