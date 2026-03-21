@@ -5,9 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.flowerboutique"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.flowerboutique"
@@ -17,6 +15,11 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
     }
 
     buildTypes {
@@ -40,6 +43,8 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.firebase.common)
+    implementation(libs.room.runtime)
+    implementation(libs.cloudinary.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -49,4 +54,5 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     //Dung giao dien dang nhap co san cua firebase
     implementation("com.firebaseui:firebase-ui-auth:9.1.1")
+    annotationProcessor(libs.room.compiler)
 }
