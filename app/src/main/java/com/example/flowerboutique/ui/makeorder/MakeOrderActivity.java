@@ -1,4 +1,4 @@
-package edu.ou.flowerstore.ui.makeorder;
+package com.example.flowerboutique.ui.makeorder;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,7 +23,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 import com.example.flowerboutique.BoutiqueApplication;
-//import com.example.flowerboutique.databinding.ActivityMakeOrderBinding;
+import com.example.flowerboutique.databinding.ActivityMakeOrderBinding;
 //import com.example.flowerboutique.ui.authen.Login;
 import com.example.flowerboutique.ui.cart.CartItem;
 import com.example.flowerboutique.ui.payment.ZaloPayPaymentActivity;
@@ -33,7 +33,7 @@ public class MakeOrderActivity extends AppCompatActivity {
 
     private ActivityMakeOrderBinding binding;
     private LiveData<List<CartItem>> cart;
-    private FlowerStoreApplication application;
+    private BoutiqueApplication application;
     private final NumberFormat numberFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "vn"));
 
     private HashMap<String, Object> address = new HashMap<>();
@@ -59,17 +59,17 @@ public class MakeOrderActivity extends AppCompatActivity {
         });
 
         // 1. Khởi tạo dữ liệu từ Application
-        application = FlowerStoreApplication.getInstance();
+        application = BoutiqueApplication.getInstance();
         cart = application.getCartItemsLiveData();
         appFirebase = application.getAppFirebase();
 
         // 2. Kiểm tra đăng nhập (Bắt buộc phải đăng nhập mới cho thanh toán)
-        if (appFirebase.getFirebaseAuth().getCurrentUser() == null) {
-            Toast.makeText(this, "Vui lòng đăng nhập để tiếp tục!", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(MakeOrderActivity.this, Login.class));
-            finish();
-            return;
-        }
+//        if (appFirebase.getFirebaseAuth().getCurrentUser() == null) {
+//            Toast.makeText(this, "Vui lòng đăng nhập để tiếp tục!", Toast.LENGTH_SHORT).show();
+//            startActivity(new Intent(MakeOrderActivity.this, Login.class));
+//            finish();
+//            return;
+//        }
 
         // 3. Setup RecyclerView cho danh sách sản phẩm
         makeOrderAdapter = new MakeOrderAdapter(cart.getValue());
@@ -79,7 +79,7 @@ public class MakeOrderActivity extends AppCompatActivity {
         // 4. Lắng nghe thay đổi giỏ hàng và tính tổng tiền
         cart.observe(this, cartItems -> {
             if (cartItems != null) {
-                makeOrderAdapter.setProducts(cartItems);
+                makeOrderAdapter.setItems(cartItems);
                 makeOrderAdapter.notifyDataSetChanged();
 
                 totalPrice = cartItems.stream()
