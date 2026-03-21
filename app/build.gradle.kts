@@ -83,8 +83,7 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 
     implementation(platform("com.google.firebase:firebase-bom:34.10.0"))
-    implementation(files("../zpdk-release-v3.1.aar"))
-    implementation(platform("com.google.firebase:firebase-bom:34.10.0"))
+    implementation(files("libs/zpdk-release-v3.1.aar"))
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-auth")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
