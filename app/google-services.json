@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1082842501239",
+    "project_id": "flower-boutique-app-9a942",
+    "storage_bucket": "flower-boutique-app-9a942.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1082842501239:android:ae1c4aff9c2c374ed87672",
+        "android_client_info": {
+          "package_name": "com.example.flowerboutique"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRotQQ-RAOvz0lN6z6C7cJZPSMtGPm6Lc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
