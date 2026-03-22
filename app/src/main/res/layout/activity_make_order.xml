@@ -6,10 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FAF9F9"
-    tools:context=".ui.makeorder.MakeOrderActivity"
-    >
-
-
+    tools:context=".ui.makeorder.MakeOrderActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
@@ -28,11 +25,10 @@
                 android:id="@+id/back_btn"
                 style="@style/Button.IconOnly.Outlined"
                 android:layout_width="40sp"
-                android:layout_height="0sp"
+                android:layout_height="40sp"
                 app:icon="@drawable/ic_back"
                 app:iconSize="28sp"
                 app:iconTint="@color/black"
-                app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:strokeColor="@color/black" />
@@ -50,20 +46,21 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/top_divider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/app_bar" />
+        app:layout_constraintTop_toBottomOf="@id/app_bar" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/detail_order"
         android:layout_width="match_parent"
-        android:layout_height="0sp"
-        app:layout_constraintBottom_toBottomOf="@id/action_bar_divider"
-        app:layout_constraintTop_toBottomOf="@id/app_bar">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/action_bar_divider"
+        app:layout_constraintTop_toBottomOf="@id/top_divider">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0sp"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="13sp">
 
@@ -124,7 +121,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="5sp"
-                        android:hint="TỈnh/Thành"
+                        android:hint="Tỉnh/Thành"
                         app:shapeAppearance="@style/RoundedSquare.50Percent">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -212,6 +209,7 @@
                 android:id="@+id/address_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginVertical="10sp"
                 android:visibility="gone">
 
                 <LinearLayout
@@ -227,7 +225,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="15sp"
-                        tools:text="Địa chỉ: 1 Quang Trung, P9, Q.Gò Vâp, TP.HCM" />
+                        tools:text="Địa chỉ: 1 Quang Trung, P9, Q.Gò Vấp, TP.HCM" />
 
                     <TextView
                         android:id="@+id/phone_number_tv"
@@ -242,6 +240,7 @@
                 android:id="@+id/item_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
                 tools:listitem="@layout/item_make_order" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
@@ -250,8 +249,7 @@
         android:id="@+id/action_bar_divider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/action_bar"
-        app:layout_constraintTop_toBottomOf="@id/detail_order" />
+        app:layout_constraintBottom_toTopOf="@id/action_bar" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/action_bar"
