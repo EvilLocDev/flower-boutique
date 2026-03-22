@@ -12,6 +12,8 @@ import com.example.flowerboutique.R;
 
 public class LoginActivity extends AppCompatActivity {
 
+    String testuser ="user123";
+    String testPass="123";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +23,7 @@ public class LoginActivity extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+
         });
     }
 }
