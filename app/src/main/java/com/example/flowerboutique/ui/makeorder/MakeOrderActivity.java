@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldValue;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -32,15 +33,15 @@ import com.example.flowerboutique.utils.firebase.AppFirebase;
 public class MakeOrderActivity extends AppCompatActivity {
 
     private ActivityMakeOrderBinding binding;
-    private LiveData<List<CartItem>> cart;
     private BoutiqueApplication application;
+    private ArrayList<CartItem> orderItems;
     private final NumberFormat numberFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "vn"));
 
     private HashMap<String, Object> address = new HashMap<>();
     private String phoneNumber;
     private boolean isOpenInformInput = false;
     private boolean isFullInform = false;
-    private Long totalPrice = 0L;
+    private Long totalAmount = 0L;
 
     private AppFirebase appFirebase;
     private MakeOrderAdapter makeOrderAdapter;
@@ -52,6 +53,26 @@ public class MakeOrderActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(binding.getRoot());
 
+        // 1. NHẬN DỮ LIỆU TỪ INTENT
+        orderItems = (ArrayList<CartItem>) getIntent().getSerializableExtra("list_cart_items");
+        totalAmount = getIntent().getLongExtra("total_amount", 0);
+
+        // 2. HIỂN THỊ TỔNG TIỀN
+        binding.totalPrice.setText(numberFormat.format(totalAmount));
+
+        // 3. SET UP RECYCLERVIEW VÀ ADAPTER
+        if (orderItems != null && !orderItems.isEmpty()) {
+            MakeOrderAdapter adapter = new MakeOrderAdapter(orderItems);
+            binding.itemList.setLayoutManager(new LinearLayoutManager(this));
+            binding.itemList.setAdapter(adapter);
+
+            // Bật nút đặt hàng vì đã có sản phẩm
+            binding.makeOrderBtn.setEnabled(true);
+        } else {
+            Toast.makeText(this, "Không có sản phẩm nào để thanh toán", Toast.LENGTH_SHORT).show();
+            binding.makeOrderBtn.setEnabled(false);
+        }
+
         ViewCompat.setOnApplyWindowInsetsListener(binding.main, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -60,7 +81,6 @@ public class MakeOrderActivity extends AppCompatActivity {
 
         // 1. Khởi tạo dữ liệu từ Application
         application = BoutiqueApplication.getInstance();
-        cart = application.getCartItemsLiveData();
         appFirebase = application.getAppFirebase();
 
         // 2. Kiểm tra đăng nhập (Bắt buộc phải đăng nhập mới cho thanh toán)
@@ -71,23 +91,6 @@ public class MakeOrderActivity extends AppCompatActivity {
 //            return;
 //        }
 
-        // 3. Setup RecyclerView cho danh sách sản phẩm
-        makeOrderAdapter = new MakeOrderAdapter(cart.getValue());
-        binding.itemList.setAdapter(makeOrderAdapter);
-        binding.itemList.setLayoutManager(new LinearLayoutManager(this));
-
-        // 4. Lắng nghe thay đổi giỏ hàng và tính tổng tiền
-        cart.observe(this, cartItems -> {
-            if (cartItems != null) {
-                makeOrderAdapter.setItems(cartItems);
-                makeOrderAdapter.notifyDataSetChanged();
-
-                totalPrice = cartItems.stream()
-                        .map(cartItem -> cartItem.getPrice() * cartItem.getQuantity())
-                        .reduce(0L, Long::sum);
-                binding.totalPrice.setText(numberFormat.format(totalPrice));
-            }
-        });
 
         setupClickEvents();
     }
@@ -180,15 +183,15 @@ public class MakeOrderActivity extends AppCompatActivity {
     // =================================================================================
     // HÀM XỬ LÝ LƯU FIREBASE VÀ CHUYỂN ZALOPAY
     // =================================================================================
-
+//điều kiện cộng thêm || user == null
     private void processOrderAndPayment() {
         FirebaseUser user = appFirebase.getFirebaseAuth().getCurrentUser();
-        if (!isEnoughInformation() || user == null) {
+        if (!isEnoughInformation()) {
             Toast.makeText(this, "Thông tin chưa đầy đủ hoặc lỗi đăng nhập!", Toast.LENGTH_LONG).show();
             return;
         }
 
-        if (cart.getValue() == null || cart.getValue().isEmpty()) {
+        if (orderItems == null || orderItems.isEmpty()) {
             Toast.makeText(this, "Giỏ hàng rỗng, không thể đặt hàng!", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -197,8 +200,8 @@ public class MakeOrderActivity extends AppCompatActivity {
         binding.makeOrderBtn.setEnabled(false);
         binding.makeOrderBtn.setText("Đang tạo đơn hàng...");
 
-        // 1. Chuẩn bị dữ liệu danh sách sản phẩm
-        List<HashMap<String, Object>> orderProducts = cart.getValue().stream().map(product -> {
+        // 1. Chuẩn bị dữ liệu danh sách sản phẩm từ orderItems
+        List<HashMap<String, Object>> orderProducts = orderItems.stream().map(product -> {
             HashMap<String, Object> result = new HashMap<>();
             result.put("name", product.getName());
             result.put("product", appFirebase.getProductsCollection().document(product.getId()));
@@ -206,10 +209,10 @@ public class MakeOrderActivity extends AppCompatActivity {
             result.put("quantity", product.getQuantity());
             return result;
         }).collect(Collectors.toList());
-
+// appFirebase.getUsersCollection().document(user.getUid())
         // 2. Đóng gói toàn bộ đơn hàng
         HashMap<String, Object> order = new HashMap<>();
-        order.put("user", appFirebase.getUsersCollection().document(user.getUid()));
+        order.put("user", "1");
         order.put("status", "paying"); // Trạng thái đang thanh toán ZaloPay
         order.put("created_date", FieldValue.serverTimestamp());
         order.put("updated_date", FieldValue.serverTimestamp());
@@ -218,7 +221,7 @@ public class MakeOrderActivity extends AppCompatActivity {
         order.put("address", address);
         order.put("phone_number", phoneNumber);
         order.put("products", orderProducts);
-        order.put("total_price", totalPrice);
+        order.put("total_price", totalAmount);
 
         // 3. Đẩy lên Firebase Firestore
         appFirebase.getOrdersCollection().add(order).addOnCompleteListener(task -> {
@@ -235,7 +238,7 @@ public class MakeOrderActivity extends AppCompatActivity {
                 // 5. Mở ZaloPay và truyền OrderID + Tổng tiền qua bên đó
                 Intent intent = new Intent(MakeOrderActivity.this, ZaloPayPaymentActivity.class);
                 intent.putExtra("orderId", newOrderId);
-                intent.putExtra("totalPrice", totalPrice); // Truyền tổng tiền để ZaloPay tạo hóa đơn chính xác
+                intent.putExtra("totalPrice", totalAmount); // Truyền tổng tiền để ZaloPay tạo hóa đơn chính xác
                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY); // Tránh người dùng bấm Back quay lại màn hình MakeOrder cũ
                 startActivity(intent);
 

@@ -38,7 +38,7 @@ public class ZaloPayPaymentActivity extends AppCompatActivity {
 
         // Nhận dữ liệu từ MakeOrderActivity truyền sang
         orderId = getIntent().getStringExtra("orderId");
-        totalAmount = getIntent().getLongExtra("totalAmount", 0L);
+        totalAmount = getIntent().getLongExtra("totalPrice", 0L);
 
         if (orderId == null || totalAmount == 0L) {
             Toast.makeText(this, "Dữ liệu đơn hàng không hợp lệ!", Toast.LENGTH_SHORT).show();
