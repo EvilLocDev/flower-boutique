@@ -190,7 +190,7 @@
             android:id="@+id/tvSignInLink"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="12dp"
             android:text="Đã có tài khoản? Đăng nhập"
             android:textColor="#213871"
             android:textSize="14sp"
