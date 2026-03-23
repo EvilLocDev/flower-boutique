@@ -53,6 +53,10 @@ public class CartActivity extends AppCompatActivity {
 
         // 3. Xử lý các nút bấm ngoài danh sách
         setupClickEvents();
+
+        findViewById(R.id.ivBack).setOnClickListener(v -> {
+            finish();
+        });
     }
 
     private void initViews() {

@@ -93,4 +93,6 @@ dependencies {
     //Dung giao dien dang nhap co san cua firebase
     implementation("com.firebaseui:firebase-ui-auth:9.1.1")
     annotationProcessor(libs.room.compiler)
+
+    implementation("com.squareup.picasso:picasso:2.8")
 }

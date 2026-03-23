@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.flowerboutique.R;
+import com.example.flowerboutique.ui.main_home.MainActivity;
 import com.example.flowerboutique.ui.makeorder.MakeOrderActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -89,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         // dat chuyen trang tam thoi, khi nao có main thi sua
                         Intent intent = new Intent();
-                        intent.setClass(LoginActivity.this, MakeOrderActivity.class);
+                        intent.setClass(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                     } else {
                         Toast.makeText(this,

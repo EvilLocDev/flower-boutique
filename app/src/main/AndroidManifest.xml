@@ -13,32 +13,37 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FlowerBoutique">
         <activity
+            android:name=".ui.profile.ModifyProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.categorydetail.CategoryDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.cart.CartActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.authen.SignUpActivity"
+            android:name=".ui.main_home.MainActivity"
             android:exported="true">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.authen.SignUpActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.productdetail.ProductDetailActivity"
+            android:exported="false" /> <!-- <activity -->
+        <!-- android:name=".ui.main_home.MainActivity" -->
+        <!-- android:exported="false" /> -->
+        <activity
             android:name=".ui.authen.LoginActivity"
-            android:exported="false">
-
-        </activity>
-
+            android:exported="false" />
         <activity
             android:name=".ui.makeorder.MakeOrderActivity"
             android:exported="false" />
-
-
     </application>
 
 </manifest>
