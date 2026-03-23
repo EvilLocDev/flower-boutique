@@ -2,252 +2,154 @@ package com.example.flowerboutique.ui.makeorder;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FieldValue;
-
-import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
 
 import com.example.flowerboutique.BoutiqueApplication;
 import com.example.flowerboutique.databinding.ActivityMakeOrderBinding;
-//import com.example.flowerboutique.ui.authen.Login;
 import com.example.flowerboutique.ui.cart.CartItem;
 import com.example.flowerboutique.ui.payment.ZaloPayPaymentActivity;
-import com.example.flowerboutique.utils.firebase.AppFirebase;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
 
 public class MakeOrderActivity extends AppCompatActivity {
 
     private ActivityMakeOrderBinding binding;
-    private LiveData<List<CartItem>> cart;
-    private BoutiqueApplication application;
+    private long totalAmount = 0L;
+    private ArrayList<CartItem> orderItems;
     private final NumberFormat numberFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "vn"));
 
-    private HashMap<String, Object> address = new HashMap<>();
-    private String phoneNumber;
-    private boolean isOpenInformInput = false;
-    private boolean isFullInform = false;
-    private Long totalPrice = 0L;
-
-    private AppFirebase appFirebase;
-    private MakeOrderAdapter makeOrderAdapter;
+    // =========================================================================
+    // =========================== KHU VỰC GIAO DIỆN ===========================
+    // =========================================================================
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMakeOrderBinding.inflate(getLayoutInflater());
-        EdgeToEdge.enable(this);
         setContentView(binding.getRoot());
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.main, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        // 1. Nhận dữ liệu từ Intent
+        orderItems = (ArrayList<CartItem>) getIntent().getSerializableExtra("list_cart_items");
+        totalAmount = getIntent().getLongExtra("total_amount", 0);
 
-        // 1. Khởi tạo dữ liệu từ Application
-        application = BoutiqueApplication.getInstance();
-        cart = application.getCartItemsLiveData();
-        appFirebase = application.getAppFirebase();
+        // 2. Setup hiển thị danh sách và tổng tiền
+        setupUI();
 
-        // 2. Kiểm tra đăng nhập (Bắt buộc phải đăng nhập mới cho thanh toán)
-//        if (appFirebase.getFirebaseAuth().getCurrentUser() == null) {
-//            Toast.makeText(this, "Vui lòng đăng nhập để tiếp tục!", Toast.LENGTH_SHORT).show();
-//            startActivity(new Intent(MakeOrderActivity.this, Login.class));
-//            finish();
-//            return;
-//        }
+        // 3. Lắng nghe sự kiện click Đặt hàng
+        binding.makeOrderBtn.setOnClickListener(v -> validateAndProcessOrder());
 
-        // 3. Setup RecyclerView cho danh sách sản phẩm
-        makeOrderAdapter = new MakeOrderAdapter(cart.getValue());
-        binding.itemList.setAdapter(makeOrderAdapter);
-        binding.itemList.setLayoutManager(new LinearLayoutManager(this));
-
-        // 4. Lắng nghe thay đổi giỏ hàng và tính tổng tiền
-        cart.observe(this, cartItems -> {
-            if (cartItems != null) {
-                makeOrderAdapter.setItems(cartItems);
-                makeOrderAdapter.notifyDataSetChanged();
-
-                totalPrice = cartItems.stream()
-                        .map(cartItem -> cartItem.getPrice() * cartItem.getQuantity())
-                        .reduce(0L, Long::sum);
-                binding.totalPrice.setText(numberFormat.format(totalPrice));
-            }
-        });
-
-        setupClickEvents();
-    }
-
-    private void setupClickEvents() {
-        // Mở form thêm địa chỉ
-        binding.addAddressBtn.setOnClickListener(v -> {
-            binding.cityEdt.setText((String) address.get("city"));
-            binding.districtEdt.setText((String) address.get("district"));
-            binding.wardEdt.setText((String) address.get("ward"));
-            binding.addressEdt.setText((String) address.get("address"));
-            binding.phoneNumberEdt.setText(phoneNumber);
-
-            isOpenInformInput = true;
-            renderInform();
-        });
-
-        // Nhấn vào thẻ địa chỉ để sửa
-        binding.addressDetail.setOnClickListener(v -> {
-            isOpenInformInput = true;
-            renderInform();
-        });
-
-        // Lưu thông tin người dùng nhập vào
-        binding.saveInform.setOnClickListener(v -> saveInform());
-
-        // Nút quay lại
+        // Lắng nghe sự kiện nút Back
         binding.backBtn.setOnClickListener(v -> finish());
-
-        // NÚT KẾT HỢP FIREBASE & ZALOPAY
-        binding.makeOrderBtn.setOnClickListener(v -> processOrderAndPayment());
     }
 
-    // =================================================================================
-    // CÁC HÀM XỬ LÝ LOGIC UI
-    // =================================================================================
+    private void setupUI() {
+        // Hiển thị tổng tiền
+        binding.totalPrice.setText(numberFormat.format(totalAmount));
 
-    private void renderInform() {
-        if (isOpenInformInput) {
-            binding.addAddressBtn.setVisibility(View.GONE);
-            binding.addAddress.setVisibility(View.VISIBLE);
-            binding.addressDetail.setVisibility(View.GONE);
+        // Setup RecyclerView
+        if (orderItems != null && !orderItems.isEmpty()) {
+            MakeOrderAdapter adapter = new MakeOrderAdapter(orderItems);
+            // LƯU Ý: Đảm bảo ID này (rvOrderItems) khớp với file XML của bạn
+            binding.rvOrderItems.setLayoutManager(new LinearLayoutManager(this));
+            binding.rvOrderItems.setAdapter(adapter);
+
+            binding.makeOrderBtn.setEnabled(true);
         } else {
-            binding.addAddress.setVisibility(View.GONE);
-            if (isFullInform) {
-                binding.addAddressBtn.setVisibility(View.GONE);
-                binding.addressDetail.setVisibility(View.VISIBLE);
-
-                // Cập nhật Text hiển thị
-                binding.addressTv.setText(String.format("Địa chỉ: %s, %s, %s, %s",
-                        address.get("address"), address.get("ward"), address.get("district"), address.get("city")));
-                binding.phoneNumberTv.setText(String.format("Số điện thoại: %s", phoneNumber));
-            } else {
-                binding.addAddressBtn.setVisibility(View.VISIBLE);
-                binding.addressDetail.setVisibility(View.GONE);
-            }
-        }
-        // Khóa hoặc mở khóa nút Đặt hàng
-        binding.makeOrderBtn.setEnabled(isFullInform);
-    }
-
-    private boolean isEnoughInformation() {
-        return address.containsKey("city") && address.containsKey("district") &&
-                address.containsKey("ward") && address.containsKey("address") &&
-                phoneNumber != null && !phoneNumber.isEmpty();
-    }
-
-    private void saveInform() {
-        String city = binding.cityEdt.getText() != null ? binding.cityEdt.getText().toString().trim() : "";
-        String district = binding.districtEdt.getText() != null ? binding.districtEdt.getText().toString().trim() : "";
-        String ward = binding.wardEdt.getText() != null ? binding.wardEdt.getText().toString().trim() : "";
-        String addressInput = binding.addressEdt.getText() != null ? binding.addressEdt.getText().toString().trim() : "";
-        String phoneNumberInp = binding.phoneNumberEdt.getText() != null ? binding.phoneNumberEdt.getText().toString().trim() : "";
-
-        if (!city.isEmpty() && !district.isEmpty() && !ward.isEmpty() && !addressInput.isEmpty() && !phoneNumberInp.isEmpty()) {
-            this.address.put("city", city);
-            this.address.put("district", district);
-            this.address.put("ward", ward);
-            this.address.put("address", addressInput);
-            this.phoneNumber = phoneNumberInp;
-
-            this.isFullInform = isEnoughInformation();
-            this.isOpenInformInput = false;
-            renderInform();
-        } else {
-            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin nhận hàng", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Không có sản phẩm nào để thanh toán", Toast.LENGTH_SHORT).show();
+            binding.makeOrderBtn.setEnabled(false);
         }
     }
 
-    // =================================================================================
-    // HÀM XỬ LÝ LƯU FIREBASE VÀ CHUYỂN ZALOPAY
-    // =================================================================================
+    private void validateAndProcessOrder() {
+        // LƯU Ý: Đảm bảo các ID (edtName, edtPhone, edtAddress) khớp với file XML của bạn
+        String customerName = binding.edtName.getText().toString().trim();
+        String customerPhone = binding.edtPhone.getText().toString().trim();
+        String customerAddress = binding.edtAddress.getText().toString().trim();
 
-    private void processOrderAndPayment() {
-        FirebaseUser user = appFirebase.getFirebaseAuth().getCurrentUser();
-        if (!isEnoughInformation() || user == null) {
-            Toast.makeText(this, "Thông tin chưa đầy đủ hoặc lỗi đăng nhập!", Toast.LENGTH_LONG).show();
+        // Kiểm tra thông tin
+        if (customerName.isEmpty() || customerPhone.isEmpty() || customerAddress.isEmpty()) {
+            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin khách hàng!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (cart.getValue() == null || cart.getValue().isEmpty()) {
-            Toast.makeText(this, "Giỏ hàng rỗng, không thể đặt hàng!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Đổi nút thành trạng thái đang xử lý để tránh bấm 2 lần
+        // Khóa nút để tránh spam click
         binding.makeOrderBtn.setEnabled(false);
-        binding.makeOrderBtn.setText("Đang tạo đơn hàng...");
+        binding.makeOrderBtn.setText("Đang xử lý...");
 
-        // 1. Chuẩn bị dữ liệu danh sách sản phẩm
-        List<HashMap<String, Object>> orderProducts = cart.getValue().stream().map(product -> {
-            HashMap<String, Object> result = new HashMap<>();
-            result.put("name", product.getName());
-            result.put("product", appFirebase.getProductsCollection().document(product.getId()));
-            result.put("unitPrice", product.getPrice());
-            result.put("quantity", product.getQuantity());
-            return result;
-        }).collect(Collectors.toList());
+        // Chuẩn bị gói dữ liệu
+        HashMap<String, Object> orderData = new HashMap<>();
+        orderData.put("customerName", customerName);
+        orderData.put("customerPhone", customerPhone);
+        orderData.put("customerAddress", customerAddress);
+        orderData.put("totalAmount", totalAmount);
+        orderData.put("status", "pending");
+        orderData.put("items", orderItems);
+        orderData.put("createdAt", FieldValue.serverTimestamp());
 
-        // 2. Đóng gói toàn bộ đơn hàng
-        HashMap<String, Object> order = new HashMap<>();
-        order.put("user", appFirebase.getUsersCollection().document(user.getUid()));
-        order.put("status", "paying"); // Trạng thái đang thanh toán ZaloPay
-        order.put("created_date", FieldValue.serverTimestamp());
-        order.put("updated_date", FieldValue.serverTimestamp());
-        order.put("completed_date", null);
-        order.put("payment_date", null);
-        order.put("address", address);
-        order.put("phone_number", phoneNumber);
-        order.put("products", orderProducts);
-        order.put("total_price", totalPrice);
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            orderData.put("userId", FirebaseAuth.getInstance().getCurrentUser().getUid());
+        }
 
-        // 3. Đẩy lên Firebase Firestore
-        appFirebase.getOrdersCollection().add(order).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                String newOrderId = task.getResult().getId(); // Lấy ID đơn hàng Firebase vừa tạo
+        // Gọi hàm xử lý Firebase ở bên dưới
+        saveOrderToFirebase(orderData);
+    }
 
-                // 4. Xóa sạch giỏ hàng trong Room Database (Chạy Thread ẩn để mượt UI)
-                new Thread(() -> {
-                    if (application.getRoomDB() != null) {
-                        application.getRoomDB().cartDAO().deleteAll();
-                    }
-                }).start();
 
-                // 5. Mở ZaloPay và truyền OrderID + Tổng tiền qua bên đó
-                Intent intent = new Intent(MakeOrderActivity.this, ZaloPayPaymentActivity.class);
-                intent.putExtra("orderId", newOrderId);
-                intent.putExtra("totalPrice", totalPrice); // Truyền tổng tiền để ZaloPay tạo hóa đơn chính xác
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY); // Tránh người dùng bấm Back quay lại màn hình MakeOrder cũ
-                startActivity(intent);
+    // =========================================================================
+    // ======================== KHU VỰC XỬ LÝ NGHIỆP VỤ ========================
+    // =========================================================================
 
-                // Kết thúc màn hình đặt hàng
-                finish();
+    /**
+     * Hàm lưu thông tin đơn hàng lên Firebase Firestore
+     */
+    private void saveOrderToFirebase(HashMap<String, Object> orderData) {
+        FirebaseFirestore.getInstance().collection("orders")
+                .add(orderData)
+                .addOnSuccessListener(documentReference -> {
+                    // Lấy mã ID của đơn hàng vừa tạo thành công
+                    String newOrderId = documentReference.getId();
 
-            } else {
-                // Nếu lưu Firebase thất bại
-                binding.makeOrderBtn.setEnabled(true);
-                binding.makeOrderBtn.setText("Đặt hàng");
-                Toast.makeText(this, "Lỗi khi tạo đơn hàng trên hệ thống!", Toast.LENGTH_LONG).show();
+                    // Xóa giỏ hàng local và chuyển sang thanh toán
+                    clearCartInRoomDB();
+                    navigateToZaloPay(newOrderId);
+                })
+                .addOnFailureListener(e -> {
+                    // Mở lại nút nếu có lỗi
+                    binding.makeOrderBtn.setEnabled(true);
+                    binding.makeOrderBtn.setText("Đặt hàng");
+                    Toast.makeText(MakeOrderActivity.this, "Lỗi khi lưu đơn hàng: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+    }
+
+    /**
+     * Hàm xóa sạch giỏ hàng trong Room Database (Chạy Thread ẩn để mượt UI)
+     */
+    private void clearCartInRoomDB() {
+        new Thread(() -> {
+            if (BoutiqueApplication.getInstance().getRoomDB() != null) {
+                BoutiqueApplication.getInstance().getRoomDB().cartDAO().deleteAll();
             }
-        });
+        }).start();
+    }
+
+    /**
+     * Hàm chuyển hướng sang màn hình thanh toán ZaloPay
+     */
+    private void navigateToZaloPay(String orderId) {
+        Intent intent = new Intent(MakeOrderActivity.this, ZaloPayPaymentActivity.class);
+        intent.putExtra("orderId", orderId);
+        intent.putExtra("totalAmount", totalAmount);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY); // Tránh bấm nút Back quay lại trang MakeOrder
+        startActivity(intent);
+        finish();
     }
 }

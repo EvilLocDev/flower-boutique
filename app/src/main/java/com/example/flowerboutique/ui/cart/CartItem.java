@@ -1,6 +1,8 @@
 package com.example.flowerboutique.ui.cart;
 
-public class CartItem {
+import java.io.Serializable;
+
+public class CartItem implements Serializable {
     private String id;
     private String imageUrl;
     private String name;
