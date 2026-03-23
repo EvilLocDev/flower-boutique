@@ -11,6 +11,7 @@ firebaseCommon = "22.0.1"
 roomRuntime = "2.8.4"
 roomCompiler = "2.8.4"
 cloudinaryAndroid = "3.1.2"
+firebaseFirestore = "26.1.2"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -24,6 +25,7 @@ firebase-common = { group = "com.google.firebase", name = "firebase-common", ver
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomRuntime" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
 cloudinary-android = { group = "com.cloudinary", name = "cloudinary-android", version.ref = "cloudinaryAndroid" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

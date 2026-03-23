@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.firebase.common)
     implementation(libs.room.runtime)
     implementation(libs.cloudinary.android)
+    implementation(libs.firebase.firestore)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
