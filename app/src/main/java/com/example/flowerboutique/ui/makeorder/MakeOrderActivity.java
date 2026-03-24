@@ -54,7 +54,10 @@ public class MakeOrderActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         // 1. NHẬN DỮ LIỆU TỪ INTENT
-        orderItems = (ArrayList<CartItem>) getIntent().getSerializableExtra("list_cart_items");
+        // Lấy danh sách từ Intent
+        if (getIntent().hasExtra("list_cart_items")) {
+            orderItems = (ArrayList<CartItem>) getIntent().getSerializableExtra("list_cart_items");
+        }
         totalAmount = getIntent().getLongExtra("total_amount", 0);
 
         // 2. HIỂN THỊ TỔNG TIỀN

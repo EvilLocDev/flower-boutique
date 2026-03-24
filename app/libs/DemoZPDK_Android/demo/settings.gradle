@@ -1,0 +1,5 @@
+include ':zpdk-release'
+include ':zpdk-release-4.4.1'
+include ':zpdk-release-4.4.1'
+rootProject.name='merchantDemo'
+include ':app', ':zpdk-sandbox-release-v1'
