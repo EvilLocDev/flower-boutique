@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:padding="24dp">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/dialog_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Đăng xuất"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#AB886D"
+        android:layout_gravity="center_horizontal" />
+
+    <!-- Message -->
+    <TextView
+        android:id="@+id/dialog_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bạn có muốn đăng xuất?"
+        android:textSize="16sp"
+        android:textColor="#333333"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal" />
+
+    <!-- Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="24dp"
+        android:gravity="center">
+
+        <!-- Cancel Button -->
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Hủy đăng xuất"
+            android:textColor="#FFFFFF"
+            android:background="@color/orange_button"
+            android:padding="12dp"
+            android:layout_marginEnd="8dp" />
+
+        <!-- Yes, Logout Button -->
+        <Button
+            android:id="@+id/logout_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Đăng xuất"
+            android:textColor="#FFFFFF"
+            android:background="@color/orange_button"
+            android:padding="12dp"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+</LinearLayout>

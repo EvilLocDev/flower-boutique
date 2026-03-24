@@ -11,7 +11,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.example.flowerboutique.R; // Thay bằng R của bạn nếu dùng ViewBinding thì càng tốt
-import com.example.flowerboutique.ui.home.HomeActivity; // Thay bằng đường dẫn tới Activity Trang Chủ của bạn
+import com.example.flowerboutique.ui.main_home.HomeActivity; // Thay bằng đường dẫn tới Activity Trang Chủ của bạn
 
 public class PaymentResultActivity extends AppCompatActivity {
 

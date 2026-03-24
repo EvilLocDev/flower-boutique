@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/background_color"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16sp">
+
+        <!-- Ảnh đại diện -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profile_image"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_placeholder"
+            app:shapeAppearanceOverlay="@style/RoundedSquare.30Percent" />
+
+        <!-- Cụm văn bản (Chào mừng & Tên) -->
+        <LinearLayout
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12sp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Welcome Back"
+                android:textColor="#757575"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tine Anderson"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Nút Giỏ hàng -->
+        <Button
+            android:id="@+id/cart_btn"
+            style="@style/Button.IconOnly.Outlined"
+            android:layout_width="40sp"
+            android:layout_height="40sp"
+            android:layout_marginEnd="8sp"
+            android:backgroundTint="#F8F8F8"
+            app:icon="@drawable/ic_menu_cart"
+            app:iconSize="20sp"
+            app:iconTint="#000000"
+            app:shapeAppearanceOverlay="@style/RoundedSquare.30Percent"
+            app:strokeColor="#E0E0E0"
+            app:strokeWidth="1sp" />
+
+        <!-- Nút Thông báo/Tùy chọn -->
+        <Button
+            android:id="@+id/notification_btn"
+            style="@style/Button.IconOnly.Outlined"
+            android:layout_width="40sp"
+            android:layout_height="40sp"
+            android:backgroundTint="#F8F8F8"
+            app:icon="@drawable/ic_bell"
+            app:iconSize="20sp"
+            app:iconTint="#000000"
+            app:shapeAppearanceOverlay="@style/RoundedSquare.30Percent"
+            app:strokeColor="#E0E0E0"
+            app:strokeWidth="1sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/search_btn"
+            style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_margin="0sp"
+            android:layout_weight="1"
+            android:gravity="start|center_vertical"
+            android:paddingVertical="0sp"
+            android:text="Tìm kiếm"
+            app:icon="@drawable/ic_search" />
+
+        <Button
+            android:id="@+id/option_btn"
+            style="@style/Button.IconOnly.Outlined"
+            android:layout_width="30sp"
+            android:layout_height="30sp"
+            android:layout_marginStart="5sp"
+            android:backgroundTint="#00FFFFFF"
+            android:scaleType="centerInside"
+            app:icon="@drawable/ic_option"
+            app:iconSize="28sp"
+            app:strokeWidth="0sp"
+            app:tint="?attr/colorPrimary" />
+
+    </LinearLayout>
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="100sp"
+        android:layout_marginVertical="10sp"
+        android:src="@drawable/ic_logo_shop" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/categories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="15sp">
+
+        <LinearLayout
+            android:id="@+id/category_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Danh mục hoa"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/see_more_categories"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="10dp"
+                android:text="Xem Thêm"
+                android:textColor="?attr/colorPrimary" />
+
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/weeding_section"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/birthday_section"
+            app:layout_constraintTop_toBottomOf="@id/category_header">
+
+            <Button
+                android:id="@+id/wedding_btn"
+                style="@style/Button.IconOnly.Elevated"
+                android:layout_width="70sp"
+                android:layout_height="70sp"
+                android:elevation="1sp"
+                app:icon="@drawable/ic_flower_ring"
+                app:iconSize="40sp"
+                app:iconTint="@null"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hoa cưới"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/wedding_btn" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/birthday_section"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:layout_constraintLeft_toRightOf="@id/weeding_section"
+            app:layout_constraintRight_toLeftOf="@id/congratulate_section"
+            app:layout_constraintTop_toBottomOf="@id/category_header">
+
+            <Button
+                android:id="@+id/birthday_btn"
+                style="@style/Button.IconOnly.Elevated"
+                android:layout_width="70sp"
+                android:layout_height="70sp"
+                android:layout_weight="1"
+                android:elevation="1sp"
+                app:icon="@drawable/ic_flower_birthday"
+                app:iconSize="40sp"
+                app:iconTint="@null"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hoa kỷ niệm"
+                android:textAlignment="center"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/birthday_btn" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/congratulate_section"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingHorizontal="2sp"
+            app:layout_constraintLeft_toRightOf="@id/birthday_section"
+            app:layout_constraintRight_toLeftOf="@id/office_section"
+            app:layout_constraintTop_toBottomOf="@id/category_header">
+
+            <Button
+                android:id="@+id/congratulate_btn"
+                style="@style/Button.IconOnly.Elevated"
+                android:layout_width="70sp"
+                android:layout_height="70sp"
+                android:layout_weight="1"
+                android:elevation="1sp"
+                app:icon="@drawable/ic_flower_achieve"
+                app:iconSize="40sp"
+                app:iconTint="@null"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hoa chúc mừng"
+                android:textAlignment="center"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/congratulate_btn" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/office_section"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:layout_constraintLeft_toRightOf="@id/congratulate_section"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/category_header">
+
+            <Button
+                android:id="@+id/office_btn"
+                style="@style/Button.IconOnly.Elevated"
+                android:layout_width="70sp"
+                android:layout_height="70sp"
+                android:layout_weight="1"
+                android:elevation="1sp"
+                android:gravity="center_horizontal"
+                app:icon="@drawable/ic_flower_office"
+                app:iconSize="40sp"
+                app:iconTint="@null"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cây cảnh"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/office_btn" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20sp"
+        android:text="Sản phẩm bán chạy"
+        android:textSize="20sp" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/flower_home_listView"
+        android:layout_width="match_parent"
+        android:layout_height="267dp"
+        android:layout_marginVertical="10sp"
+        android:padding="5dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="2"
+        tools:itemCount="10"
+        tools:listitem="@layout/item_overview_product" />
+
+
+</LinearLayout>

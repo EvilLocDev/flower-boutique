@@ -12,6 +12,7 @@ roomRuntime = "2.8.4"
 roomCompiler = "2.8.4"
 cloudinaryAndroid = "3.1.2"
 firebaseFirestore = "26.1.2"
+picasso = "2.8"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
