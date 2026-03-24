@@ -1,4 +1,5 @@
 plugins {
+
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
 }
@@ -89,8 +90,11 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 
     //Dung giao dien dang nhap co san cua firebase
     implementation("com.firebaseui:firebase-ui-auth:9.1.1")
     annotationProcessor(libs.room.compiler)
 }
+
+
