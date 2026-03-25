@@ -5,9 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.flowerboutique"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.flowerboutique"
@@ -74,7 +72,7 @@ dependencies {
     implementation(fileTree(mapOf(
         "dir" to "B:\\flower-boutique\\app\\libs",
         "include" to listOf("*.aar", "*.jar"),
-        "exclude" to listOf()
+        "exclude" to listOf<String>()
     )))
     annotationProcessor(libs.room.compiler)
     implementation(libs.appcompat)
@@ -100,4 +98,7 @@ dependencies {
     implementation("com.firebaseui:firebase-ui-auth:9.1.1")
 
     implementation("com.squareup.picasso:picasso:2.8")
+    implementation("com.squareup.okhttp3:okhttp:4.6.0")
+    implementation("commons-codec:commons-codec:1.14")
+
 }

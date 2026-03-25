@@ -4,6 +4,7 @@
 
     <queries>
         <package android:name="vn.com.vng.zalopay" />
+        <package android:name="vn.com.vng.zalopay.sandbox" />
         <package android:name="com.zing.zalo" />
     </queries>
 

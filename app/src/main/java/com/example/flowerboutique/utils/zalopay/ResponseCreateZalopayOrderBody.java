@@ -8,10 +8,29 @@ public class ResponseCreateZalopayOrderBody {
     public int sub_return_code;
     public String sub_return_message;
 
-    // Annotation này giúp map đúng key "zp_trans_token" từ JSON của ZaloPay trả về
     @SerializedName("zp_trans_token")
     public String zpTransToken;
 
     public String order_url;
     public String order_token;
+
+    public int getReturnCode() {
+        return return_code;
+    }
+
+    public String getReturnMessage() {
+        return return_message;
+    }
+
+    public String getZpTransToken() {
+        return zpTransToken;
+    }
+
+    public String getSubReturnMessage() {
+        return sub_return_message;
+    }
+
+    public String getOrderUrl() {
+        return order_url;
+    }
 }

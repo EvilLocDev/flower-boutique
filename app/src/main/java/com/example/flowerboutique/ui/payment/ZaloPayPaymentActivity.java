@@ -1,6 +1,7 @@
 package com.example.flowerboutique.ui.payment;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
@@ -32,13 +33,12 @@ public class ZaloPayPaymentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // 1. Gắn file giao diện xml này vào màn hình
         setContentView(R.layout.activity_zalo_pay);
 
-        // Nhận dữ liệu từ MakeOrderActivity truyền sang
         orderId = getIntent().getStringExtra("orderId");
         totalAmount = getIntent().getLongExtra("totalPrice", 0L);
+
+        android.util.Log.d("ZALOPAY_LOG", "SỐ TIỀN TRUYỀN VÀO LÀ: " + totalAmount);
 
         if (orderId == null || totalAmount == 0L) {
             Toast.makeText(this, "Dữ liệu đơn hàng không hợp lệ!", Toast.LENGTH_SHORT).show();
@@ -52,35 +52,35 @@ public class ZaloPayPaymentActivity extends AppCompatActivity {
             uid = "guest_user";
         }
 
-        // 2. Ánh xạ nút bấm và bắt sự kiện Click
         Button btnPayment = findViewById(R.id.payment_btn);
         btnPayment.setOnClickListener(v -> {
-            // Khi người dùng bấm nút mới bắt đầu gọi ZaloPay
             requestZaloPay();
         });
     }
 
     private void requestZaloPay() {
-        // Tạo mã giao dịch (transId) theo chuẩn yyMMdd_HHmmss_orderId
         String transId = new SimpleDateFormat("yyMMdd_HHmmss", Locale.getDefault()).format(new Date()) + "_" + orderId;
 
-        // Sử dụng ZaloPayUtil cực kỳ gọn gàng của bạn
         ZaloPayUtil.createPayment(orderId, uid, totalAmount, transId)
                 .enqueue(new Callback<ResponseCreateZalopayOrderBody>() {
                     @Override
                     public void onResponse(Call<ResponseCreateZalopayOrderBody> call, Response<ResponseCreateZalopayOrderBody> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            ResponseCreateZalopayOrderBody body = response.body();
+                        ResponseCreateZalopayOrderBody body = response.body();
+                        if (body == null) return;
 
-                            // return_code = 1 là ZaloPay báo tạo đơn thành công
-                            if (body.return_code == 1) {
-                                String token = body.zpTransToken;
-                                openZaloPayApp(token);
-                            } else {
-                                handleResult("failed", "Lỗi từ ZaloPay: " + body.return_message);
-                            }
+                        int returnCode = body.getReturnCode();
+                        String orderUrl = body.getOrderUrl();
+                        String subMessage = body.getSubReturnMessage();
+
+                        android.util.Log.d("ZALOPAY_LOG", "Mã phản hồi: " + returnCode);
+                        android.util.Log.d("ZALOPAY_LOG", "Order URL: " + orderUrl);
+
+                        if (returnCode == 1 && orderUrl != null) {
+                            // CÁCH CHỐNG CHÁY: Mở bằng trình duyệt
+                            openZaloPayWeb(orderUrl);
                         } else {
-                            handleResult("failed", "Lỗi kết nối đến máy chủ ZaloPay");
+                            android.util.Log.e("ZALOPAY_LOG", "ZaloPay từ chối tạo đơn. Lý do: " + subMessage);
+                            handleResult("failed", "Lỗi tạo đơn: " + subMessage);
                         }
                     }
 
@@ -91,40 +91,22 @@ public class ZaloPayPaymentActivity extends AppCompatActivity {
                 });
     }
 
-    private void openZaloPayApp(String token) {
-        // Gọi SDK mở App ZaloPay
-        ZaloPaySDK.getInstance().payOrder(this, token, "flowerstore://app", new PayOrderListener() {
-            @Override
-            public void onPaymentSucceeded(String transactionId, String transToken, String appTransId) {
-                handleResult("success", "Thanh toán thành công!");
-            }
-
-            @Override
-            public void onPaymentCanceled(String zpTransToken, String appTransId) {
-                handleResult("canceled", "Bạn đã hủy thanh toán.");
-            }
-
-            @Override
-            public void onPaymentError(ZaloPayError zaloPayError, String zpTransToken, String appTransId) {
-                handleResult("failed", "Thanh toán thất bại: " + zaloPayError.toString());
-            }
-        });
+    private void openZaloPayWeb(String url) {
+        // Mở trình duyệt web để thanh toán (Thay vì mở app qua SDK)
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(intent);
+        
+        // Lưu ý: Khi mở trình duyệt, App của bạn sẽ không nhận được kết quả ngay lập tức
+        // Bạn có thể cần một nút "Tôi đã thanh toán xong" hoặc tự động Query lại trạng thái sau khi người dùng quay lại app.
+        Toast.makeText(this, "Đang mở trình duyệt để thanh toán...", Toast.LENGTH_LONG).show();
     }
 
     private void handleResult(String status, String message) {
-        // Chuyển kết quả sang màn hình PaymentResultActivity
         Intent intent = new Intent(this, PaymentResultActivity.class);
         intent.putExtra("orderId", orderId);
         intent.putExtra("status", status);
         intent.putExtra("message", message);
         startActivity(intent);
         finish();
-    }
-
-    // HÀM BẮT BUỘC: Để ZaloPay trả kết quả về app
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        ZaloPaySDK.getInstance().onResult(intent);
     }
 }

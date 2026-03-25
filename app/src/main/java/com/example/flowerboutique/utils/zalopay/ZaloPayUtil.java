@@ -1,13 +1,10 @@
 package com.example.flowerboutique.utils.zalopay;
 
-import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.Date;
 import java.util.Locale;
 
-// TODO: Kiểm tra lại 2 dòng import này xem đã trỏ đúng vào thư mục chứa file của bạn chưa nhé
 import com.example.flowerboutique.BuildConfig;
 import com.example.flowerboutique.utils.MACGenerator;
 
@@ -17,61 +14,54 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ZaloPayUtil {
 
-    // Cấu hình Gson tự động chuyển đổi camelCase sang snake_case (JSON của ZaloPay)
-    private static final Gson gson = new GsonBuilder()
-            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-            .create();
+    private static final Gson gson = new GsonBuilder().create();
 
-    // Khởi tạo Retrofit (Singleton Pattern)
+    // Dùng endpoint chính thức cho Sandbox V2
     private static final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("https://sb-openapi.zalopay.vn/")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build();
 
-    // Tạo API Client
     private static final ZaloPayApi api = retrofit.create(ZaloPayApi.class);
 
-    /**
-     * Hàm tạo yêu cầu thanh toán (Lấy Token để mở app ZaloPay)
-     */
     public static Call<ResponseCreateZalopayOrderBody> createPayment(String orderId, String uid, long totalPrice, String transId) {
         RequestCreateZalopayOrderBody data = new RequestCreateZalopayOrderBody();
 
-        // Lấy thông tin từ BuildConfig
         data.app_id = Integer.parseInt(BuildConfig.ZALO_PAY_APP_ID);
         data.app_user = uid;
         data.app_trans_id = transId;
-        data.app_time = (new Date()).getTime();
+        data.app_time = System.currentTimeMillis();
         data.amount = totalPrice;
-        data.description = String.format("Thanh toán đơn hàng %s", orderId);
+        data.description = "Thanh toan don hang #" + orderId;
         data.item = "[]";
         data.embed_data = "{}";
+        data.bank_code = "";
 
         try {
-            // Chuỗi dữ liệu chuẩn để tạo MAC theo yêu cầu của ZaloPay
-            String macData = String.format(new Locale("vi", "vn"), "%d|%s|%s|%d|%d|%s|%s",
-                    data.app_id,
-                    data.app_trans_id,
-                    data.app_user,
-                    data.amount,
-                    data.app_time,
-                    data.embed_data,
-                    data.item);
+            // Đối với V2, chuỗi MacData vẫn là: app_id|app_trans_id|app_user|amount|app_time|embed_data|item
+            // Nhưng cần đảm bảo không có bất kỳ khoảng trắng nào
+            String macData = data.app_id + "|" + 
+                            data.app_trans_id + "|" + 
+                            data.app_user + "|" + 
+                            data.amount + "|" + 
+                            data.app_time + "|" + 
+                            data.embed_data + "|" + 
+                            data.item;
 
-            // Băm MAC bằng KEY 1
-            data.mac = MACGenerator.computeMac(macData, BuildConfig.ZALO_PAY_KEY1);
+            android.util.Log.d("ZALOPAY_LOG", "Chuỗi MacData (V2): " + macData);
+
+            data.mac = MACGenerator.computeMac(macData, BuildConfig.ZALO_PAY_KEY1.trim());
+            
+            android.util.Log.d("ZALOPAY_LOG", "MAC tạo ra: " + data.mac);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            android.util.Log.e("ZALOPAY_LOG", "Lỗi tạo MAC: " + e.getMessage());
             data.mac = "";
         }
 
         return api.createOrder(data);
     }
 
-    /**
-     * Hàm kiểm tra trạng thái đơn hàng (Dành cho việc query xem khách đã trả tiền chưa)
-     */
     public static Call<Object> queryTransStatus(String appTransId) {
         RequestQueryTransStatus data = new RequestQueryTransStatus(
                 Integer.parseInt(BuildConfig.ZALO_PAY_APP_ID),
@@ -80,14 +70,8 @@ public class ZaloPayUtil {
         );
 
         try {
-            // Chuỗi tạo MAC để truy vấn trạng thái: appid|app_trans_id|key1
-            String macData = String.format(new Locale("vi", "vn"), "%d|%s|%s",
-                    data.app_id,
-                    data.app_trans_id,
-                    BuildConfig.ZALO_PAY_KEY1);
-
-            data.mac = MACGenerator.computeMac(macData, BuildConfig.ZALO_PAY_KEY1);
-
+            String macData = data.app_id + "|" + data.app_trans_id + "|" + BuildConfig.ZALO_PAY_KEY1.trim();
+            data.mac = MACGenerator.computeMac(macData, BuildConfig.ZALO_PAY_KEY1.trim());
         } catch (Exception e) {
             e.printStackTrace();
         }
