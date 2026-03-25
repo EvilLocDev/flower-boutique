@@ -24,6 +24,7 @@ public class CategoryViewModel extends ViewModel {
 
     public void loadCategories() {
         appFirebase.getCategoriesCollection().get().addOnSuccessListener(snapshot -> {
+            categories.clear(); // Xóa dữ liệu cũ trước khi thêm dữ liệu mới
             snapshot.getDocuments().forEach(category -> {
                 String name = category.getString("name");
                 String thumbnail = category.getString("thumbnail");
