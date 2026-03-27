@@ -32,20 +32,6 @@ android {
             "\"${providers.gradleProperty("CLOUDINARY_NAME").get()}\""
         )
 
-        buildConfigField(
-            "String",
-            "ZALO_PAY_APP_ID",
-            "\"${
-                if (providers.gradleProperty("ZALO_PAY_APP_ID")
-                        .isPresent()
-                ) providers.gradleProperty("ZALO_PAY_APP_ID").get() else "0"
-            }\""
-        )
-        buildConfigField(
-            "String",
-            "ZALO_PAY_KEY1",
-            "\"${providers.gradleProperty("ZALO_PAY_KEY1").get()}\""
-        )
     }
 
     buildFeatures {
@@ -100,5 +86,6 @@ dependencies {
     implementation("com.squareup.picasso:picasso:2.8")
     implementation("com.squareup.okhttp3:okhttp:4.6.0")
     implementation("commons-codec:commons-codec:1.14")
-
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 }
