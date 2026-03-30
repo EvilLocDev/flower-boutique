@@ -107,6 +107,22 @@ public class CartActivity extends AppCompatActivity {
     private void setupClickEvents() {
         btnProceedToCheckout.setOnClickListener(v -> {
             Intent intent = new Intent(CartActivity.this, MakeOrderActivity.class);
+
+            // Lấy danh sách và tổng tiền hiện tại từ ViewModel
+            if (viewModel.getCartListLiveData().getValue() != null) {
+                // Ép kiểu về ArrayList để truyền qua Intent
+                java.util.ArrayList<CartItem> currentCartList = new java.util.ArrayList<>(viewModel.getCartListLiveData().getValue());
+
+                long currentTotalAmount = 0L;
+                if (viewModel.getTotalPriceLiveData().getValue() != null) {
+                    currentTotalAmount = viewModel.getTotalPriceLiveData().getValue();
+                }
+
+                // Đóng gói dữ liệu gửi đi
+                intent.putExtra("list_cart_items", currentCartList);
+                intent.putExtra("total_amount", currentTotalAmount);
+            }
+
             startActivity(intent);
         });
     }

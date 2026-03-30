@@ -18,14 +18,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-// TODO: Kiểm tra và sửa lại các dòng import dưới đây cho đúng với cấu trúc thư mục của bạn
 import com.example.flowerboutique.db.RoomDB; // File cấu hình Database
 import com.example.flowerboutique.db.entities.CartEntity; // Model thực thể của giỏ hàng trong Room
 import com.example.flowerboutique.ui.cart.CartItem; // Model giỏ hàng hiển thị trên UI
 import com.example.flowerboutique.utils.firebase.AppFirebase; // File cấu hình Firebase
 
-import vn.zalopay.sdk.Environment;
-import vn.zalopay.sdk.ZaloPaySDK;
+// Đã xóa các import của ZaloPay SDK
 
 public class BoutiqueApplication extends Application {
 
@@ -48,11 +46,9 @@ public class BoutiqueApplication extends Application {
         // 2. Lưu instance
         BoutiqueApplication.instance = this;
 
-        // 3. Khởi tạo ZaloPay
-        // Lưu ý: Đảm bảo bạn đã khai báo ZALO_PAY_APP_ID trong file build.gradle hoặc local.properties
-        ZaloPaySDK.init(Integer.parseInt(BuildConfig.ZALO_PAY_APP_ID), Environment.SANDBOX);
+        // Đã xóa phần khởi tạo ZaloPaySDK ở đây vì VNPay gọi qua API URL
 
-        // 4. Khởi tạo Cloudinary (Upload ảnh)
+        // 3. Khởi tạo Cloudinary (Upload ảnh)
         // Lưu ý: Đảm bảo bạn đã khai báo các khóa này trong file cấu hình
         Map<String, Object> config = new HashMap<>();
         config.put("cloud_name", BuildConfig.CLOUDINARY_NAME);
@@ -61,13 +57,13 @@ public class BoutiqueApplication extends Application {
         config.put("secure", true);
         MediaManager.init(this, config);
 
-        // 5. Khởi tạo AppFirebase và Room Database
+        // 4. Khởi tạo AppFirebase và Room Database
         appFirebase = new AppFirebase();
         roomDB = Room.databaseBuilder(this.getApplicationContext(), RoomDB.class, "flowerboutique_db")
                 .allowMainThreadQueries()
                 .build();
 
-        // 6. Lắng nghe và đồng bộ dữ liệu Giỏ hàng từ RoomDB và Firebase
+        // 5. Lắng nghe và đồng bộ dữ liệu Giỏ hàng từ RoomDB và Firebase
         cartEntitiesLiveData = roomDB.cartDAO().getAllInCart();
 
         cartEntitiesLiveData.observeForever(data -> {
