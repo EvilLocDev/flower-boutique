@@ -2,6 +2,7 @@ package com.example.flowerboutique.ui.makeorder;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -183,6 +184,8 @@ public class MakeOrderActivity extends AppCompatActivity {
         order.put("total_price", totalAmount);
         order.put("payment_method", "vnpay");
 
+
+
         // 3. Đẩy lên Firestore
         appFirebase.getOrdersCollection().add(order).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -195,6 +198,7 @@ public class MakeOrderActivity extends AppCompatActivity {
                     }
                 }).start();
 
+                Log.d("VNPAY_DEBUG", "OrderId: " + newOrderId + " | Amount: " + totalAmount);
                 // 5. Chuyển sang màn hình thanh toán VNPay
                 Intent intent = new Intent(MakeOrderActivity.this, VNPayPaymentActivity.class);
                 intent.putExtra("orderId", newOrderId);
