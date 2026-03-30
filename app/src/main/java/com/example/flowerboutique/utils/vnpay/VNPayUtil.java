@@ -1,5 +1,6 @@
 package com.example.flowerboutique.utils.vnpay;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -9,19 +10,20 @@ import retrofit2.http.POST;
 
 public class VNPayUtil {
 
-    // Thay đổi URL này thành URL API thực tế của bạn
-    private static final String BASE_URL = "https://your-backend-api.com/";
+    // 1. THÊM dấu / ở cuối link
+    private static final String BASE_URL = "https://createvnpayurl-hizrvhhlfa-uc.a.run.app/";
 
     interface VNPayService {
         @FormUrlEncoded
-        @POST("api/payment/create-vnpay") // Endpoint tạo link VNPay trên Server
-        Call<ResponseVNPayBody> createVNPayOrder(
+        // 2. SỬA THÀNH "/" vì link trên đã trỏ trực tiếp vào hàm rồi
+        @POST("/")
+        Call<ResponseBody> createVNPayOrder(
                 @Field("orderId") String orderId,
                 @Field("amount") long amount
         );
     }
 
-    public static Call<ResponseVNPayBody> createPayment(String orderId, long amount) {
+    public static Call<ResponseBody> createPayment(String orderId, long amount) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
