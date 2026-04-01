@@ -16,6 +16,7 @@ public class CartEntity {
     private int quantity; // Số lượng khách đặt
 
     // Constructor
+    public CartEntity(){};
     public CartEntity(@NonNull String product_id, int quantity) {
         this.product_id = product_id;
         this.quantity = quantity;

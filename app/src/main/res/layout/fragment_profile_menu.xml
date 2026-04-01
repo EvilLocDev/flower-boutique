@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
+    android:background="@color/background_color"
     android:padding="16dp">
 
 
@@ -44,7 +45,8 @@
     <!-- Menu List with rounded corners and shadow -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:backgroundTint="#E0C5E6E0">
 
         <LinearLayout
             android:layout_width="match_parent"

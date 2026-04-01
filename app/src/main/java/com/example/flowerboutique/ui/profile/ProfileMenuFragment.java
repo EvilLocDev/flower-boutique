@@ -21,8 +21,10 @@ import android.widget.TextView;
 
 import com.example.flowerboutique.BoutiqueApplication;
 import com.example.flowerboutique.R;
+import com.example.flowerboutique.ui.admin.AdminActivity;
 import com.example.flowerboutique.ui.cart.CartActivity;
 import com.example.flowerboutique.ui.main_home.MainActivity;
+import com.example.flowerboutique.ui.orders.CustomerOrdersActivity;
 import com.example.flowerboutique.utils.firebase.AppFirebase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.squareup.picasso.Picasso;
@@ -86,18 +88,18 @@ public class ProfileMenuFragment extends Fragment {
         profileBtn.setOnClickListener(v -> {
             activityResultLauncher.launch(new Intent(context, ModifyProfileActivity.class));
         });
-//        orderBtn.setOnClickListener(v -> {
-//            context.startActivity(new Intent(context, CustomerOrdersActivity.class));
-//        });
+        orderBtn.setOnClickListener(v -> {
+            context.startActivity(new Intent(context, CustomerOrdersActivity.class));
+        });
         cartBtn.setOnClickListener(v -> {
             context.startActivity(new Intent(context, CartActivity.class));
         });
         logoutBtn.setOnClickListener(v -> {
             alertDialog.show();
         });
-//        adminBtn.setOnClickListener(v -> {
-//            startActivity(new Intent(getContext(), AdminActivity.class));
-//        });
+        adminBtn.setOnClickListener(v -> {
+            startActivity(new Intent(getContext(), AdminActivity.class));
+        });
         if (appFirebase.getFirebaseAuth().getCurrentUser() != null)
             appFirebase.getUsersCollection().document(appFirebase.getFirebaseAuth().getCurrentUser().getUid()).get()
                     .addOnCompleteListener(task -> {

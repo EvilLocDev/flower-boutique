@@ -39,9 +39,10 @@
                 android:textSize="12sp" />
 
             <TextView
+                android:id="@+id/profile_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tine Anderson"
+                android:text="Guest"
                 android:textColor="#000000"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -62,7 +63,7 @@
             app:strokeColor="#E0E0E0"
             app:strokeWidth="1sp" />
 
-        <!-- Nút Thông báo/Tùy chọn -->
+        <!-- Nút Thông báo -->
         <Button
             android:id="@+id/notification_btn"
             style="@style/Button.IconOnly.Outlined"
@@ -78,233 +79,170 @@
 
     </LinearLayout>
 
+    <!-- Thanh tìm kiếm -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16sp">
 
         <Button
             android:id="@+id/search_btn"
             style="@style/Widget.Material3.Button.OutlinedButton.Icon"
             android:layout_width="0sp"
             android:layout_height="wrap_content"
-            android:layout_margin="0sp"
             android:layout_weight="1"
             android:gravity="start|center_vertical"
-            android:paddingVertical="0sp"
-            android:text="Tìm kiếm"
-            app:icon="@drawable/ic_search" />
-
-        <Button
-            android:id="@+id/option_btn"
-            style="@style/Button.IconOnly.Outlined"
-            android:layout_width="30sp"
-            android:layout_height="30sp"
-            android:layout_marginStart="5sp"
-            android:backgroundTint="#00FFFFFF"
-            android:scaleType="centerInside"
-            app:icon="@drawable/ic_option"
-            app:iconSize="28sp"
-            app:strokeWidth="0sp"
-            app:tint="?attr/colorPrimary" />
+            android:text="Tìm kiếm hoa..."
+            app:icon="@drawable/ic_search"
+            app:shapeAppearance="@style/RoundedSquare.30Percent"/>
 
     </LinearLayout>
 
-
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="100sp"
+        android:layout_width="match_parent"
+        android:layout_height="120sp"
         android:layout_marginVertical="10sp"
+        android:scaleType="centerInside"
         android:src="@drawable/ic_logo_shop" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/categories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="15sp">
+        android:layout_marginVertical="10sp"
+        android:paddingHorizontal="16sp">
 
         <LinearLayout
             android:id="@+id/category_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
+            android:orientation="horizontal"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Danh mục hoa"
-                android:textSize="20sp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/see_more_categories"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingRight="10dp"
-                android:text="Xem Thêm"
+                android:text="Xem tất cả"
                 android:textColor="?attr/colorPrimary" />
-
         </LinearLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/weeding_section"
-            android:layout_width="0sp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/birthday_section"
+            android:layout_marginTop="12sp"
+            android:orientation="horizontal"
+            android:weightSum="4"
             app:layout_constraintTop_toBottomOf="@id/category_header">
 
-            <Button
-                android:id="@+id/wedding_btn"
-                style="@style/Button.IconOnly.Elevated"
-                android:layout_width="70sp"
-                android:layout_height="70sp"
-                android:elevation="1sp"
-                app:icon="@drawable/ic_flower_ring"
-                app:iconSize="40sp"
-                app:iconTint="@null"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Wedding -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Hoa cưới"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/wedding_btn" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/birthday_section"
-            android:layout_width="0sp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:layout_constraintLeft_toRightOf="@id/weeding_section"
-            app:layout_constraintRight_toLeftOf="@id/congratulate_section"
-            app:layout_constraintTop_toBottomOf="@id/category_header">
-
-            <Button
-                android:id="@+id/birthday_btn"
-                style="@style/Button.IconOnly.Elevated"
-                android:layout_width="70sp"
-                android:layout_height="70sp"
                 android:layout_weight="1"
-                android:elevation="1sp"
-                app:icon="@drawable/ic_flower_birthday"
-                app:iconSize="40sp"
-                app:iconTint="@null"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:gravity="center"
+                android:orientation="vertical">
+                <Button
+                    android:id="@+id/wedding_btn"
+                    style="@style/Button.IconOnly.Elevated"
+                    android:layout_width="60sp"
+                    android:layout_height="60sp"
+                    app:icon="@drawable/ic_flower_ring"
+                    app:iconSize="35sp"
+                    app:iconTint="@null" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hoa cưới"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Anniversary -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Hoa kỷ niệm"
-                android:textAlignment="center"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/birthday_btn" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/congratulate_section"
-            android:layout_width="0sp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingHorizontal="2sp"
-            app:layout_constraintLeft_toRightOf="@id/birthday_section"
-            app:layout_constraintRight_toLeftOf="@id/office_section"
-            app:layout_constraintTop_toBottomOf="@id/category_header">
-
-            <Button
-                android:id="@+id/congratulate_btn"
-                style="@style/Button.IconOnly.Elevated"
-                android:layout_width="70sp"
-                android:layout_height="70sp"
                 android:layout_weight="1"
-                android:elevation="1sp"
-                app:icon="@drawable/ic_flower_achieve"
-                app:iconSize="40sp"
-                app:iconTint="@null"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:gravity="center"
+                android:orientation="vertical">
+                <Button
+                    android:id="@+id/birthday_btn"
+                    style="@style/Button.IconOnly.Elevated"
+                    android:layout_width="60sp"
+                    android:layout_height="60sp"
+                    app:icon="@drawable/ic_flower_birthday"
+                    app:iconSize="35sp"
+                    app:iconTint="@null" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Kỷ niệm"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
+            <!-- Congrats -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Hoa chúc mừng"
-                android:textAlignment="center"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/congratulate_btn" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/office_section"
-            android:layout_width="0sp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:layout_constraintLeft_toRightOf="@id/congratulate_section"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/category_header">
-
-            <Button
-                android:id="@+id/office_btn"
-                style="@style/Button.IconOnly.Elevated"
-                android:layout_width="70sp"
-                android:layout_height="70sp"
                 android:layout_weight="1"
-                android:elevation="1sp"
-                android:gravity="center_horizontal"
-                app:icon="@drawable/ic_flower_office"
-                app:iconSize="40sp"
-                app:iconTint="@null"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:gravity="center"
+                android:orientation="vertical">
+                <Button
+                    android:id="@+id/congratulate_btn"
+                    style="@style/Button.IconOnly.Elevated"
+                    android:layout_width="60sp"
+                    android:layout_height="60sp"
+                    app:icon="@drawable/ic_flower_achieve"
+                    app:iconSize="35sp"
+                    app:iconTint="@null" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chúc mừng"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Office -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Cây cảnh"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/office_btn" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+                <Button
+                    android:id="@+id/office_btn"
+                    style="@style/Button.IconOnly.Elevated"
+                    android:layout_width="60sp"
+                    android:layout_height="60sp"
+                    app:icon="@drawable/ic_flower_office"
+                    app:iconSize="35sp"
+                    app:iconTint="@null" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cây cảnh"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20sp"
-        android:text="Sản phẩm bán chạy"
-        android:textSize="20sp" />
+        android:layout_marginHorizontal="16sp"
+        android:text="Sản phẩm mới nhất"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/flower_home_listView"
-        android:layout_width="match_parent"
-        android:layout_height="267dp"
-        android:layout_marginVertical="10sp"
-        android:padding="5dp"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="2"
-        tools:itemCount="10"
-        tools:listitem="@layout/item_overview_product" />
-
+    <!-- XÓA flower_home_listView VÌ ĐÃ CÓ CONCATADAPTER TRONG HOMEFRAGMENT -->
 
 </LinearLayout>

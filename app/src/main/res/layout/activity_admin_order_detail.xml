@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/main"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@android:color/transparent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="10sp"
+            android:paddingVertical="12sp">
+
+            <Button
+                android:id="@+id/ivBack"
+                style="@style/Button.IconOnly.Outlined"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:paddingStart="5sp"
+                app:icon="@drawable/ic_back"
+                app:iconSize="28sp"
+                app:iconTint="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:strokeColor="@color/black" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chi tiết đơn hàng"
+                android:textSize="23sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#F5F5F5"
+        android:padding="13dp"
+        android:layout_marginHorizontal="10sp"
+        android:elevation="2dp">
+
+        <TextView
+            android:id="@+id/order_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mã đơn hàng: ABCD1234"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingBottom="8dp" />
+
+        <TextView
+            android:id="@+id/customer_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tên khách hàng: ĐẶNG THẾ DANH"
+            android:paddingBottom="4dp" />
+
+        <TextView
+            android:id="@+id/shipping_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Địa chỉ giao hàng: 1651 Lê Văn Lương, Nhà Bè, TP.HCM"
+            android:paddingBottom="4dp" />
+
+        <TextView
+            android:id="@+id/total_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tổng tiền: 3,600,000 đ"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/product_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingHorizontal="10sp"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/order_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Trạng thái: Đang đợi xử lý"
+        android:layout_marginVertical="10sp"
+        android:paddingHorizontal="10sp"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/reject_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Từ chối"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="#DADC4B4B"
+            android:textColor="#FFFFFF"
+            android:enabled="true" />
+
+        <Button
+            android:id="@+id/complete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hoàn thành"
+            android:backgroundTint="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:enabled="true" />
+
+    </LinearLayout>
+
+</LinearLayout>

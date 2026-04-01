@@ -11,124 +11,154 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.MutableLiveData;
 
+import com.example.flowerboutique.BoutiqueApplication;
 import com.example.flowerboutique.R;
 import com.example.flowerboutique.UserInfor;
+import com.example.flowerboutique.ui.main_home.MainActivity;
 import com.example.flowerboutique.ui.makeorder.MakeOrderActivity;
+import com.example.flowerboutique.utils.firebase.AppFirebase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class SignUpActivity extends AppCompatActivity {
+import java.util.HashMap;
+import java.util.Map;
 
-    private FirebaseAuth mAuth;
-    private EditText edtName,edtEmail,edtPass,edtConfirmPass;
-    private CheckBox chbConfirm;
-    private Button btnSignUp;
-    private FirebaseFirestore database;
-    private TextView tvSignInLink;
+public class SignUpActivity extends AppCompatActivity {
+    Button btnSignup, backBtn;
+    CheckBox cbTerms;
+    EditText edtEmail, edtPassword, edtComfirmPass, etName;
+    private AppFirebase appFirebase = new AppFirebase();
+    private final BoutiqueApplication application = BoutiqueApplication.getInstance();
+    private MutableLiveData<Boolean> isProgressing = new MutableLiveData<>(false);
+    private AlertDialog loadingDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_sign_up);
+        EdgeToEdge.enable(this);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        initLayout();
 
-        //khoi tao database
-        database = FirebaseFirestore.getInstance();
+        loadingDialog = new AlertDialog.Builder(this).setView(getLayoutInflater().inflate(R.layout.dialog_loading, null)).create();
 
-        edtName = findViewById(R.id.edtName);
-        edtEmail = findViewById(R.id.edtEmail);
-        edtPass =findViewById(R.id.edtPassword);
-        edtConfirmPass=findViewById(R.id.edtConfirmPassword);
-        chbConfirm =findViewById(R.id.cbTerms);
-        btnSignUp = findViewById(R.id.btnSignUp);
-        tvSignInLink =findViewById(R.id.tvSignInLink);
+        btnSignup.setOnClickListener(v -> {
+            onSignUp();
+        });
 
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String name=edtName.getText().toString();
-                String email=edtEmail.getText().toString();
-                String pass = edtPass.getText().toString();
-                String confirmPass = edtConfirmPass.getText().toString();
-
-                if (pass.equals(confirmPass)){
-                    registerByEmailAndPass(email,pass,name);
-                    FirebaseUser user = mAuth.getCurrentUser();
-
-                    if (user!=null){
-
-                        // them du lieu nguoi dung vao firestore
-                        UserInfor infor =new UserInfor(user.getUid(),name,"user");
-                        database.collection("users").document(infor.getUid()).set(infor.convertToHashmap())
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Toast.makeText(SignUpActivity.this, "Đăng ký thành công thông tin người dùng", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                        )
-                                // truong hop them du lieu that bi tren firestore
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(SignUpActivity.this, "Tạo thông tin thất bại", Toast.LENGTH_SHORT).show();
-
-                                    }
-                                });
-                    }
-                    else {
-                        // truong hop user chua duoc tao tu auth
-                        Toast.makeText(SignUpActivity.this, "Người dùng chưa được tạo", Toast.LENGTH_SHORT).show();
-
-                    }
-
-                    // dat chuyen trang tam thoi, khi nao có main thi sua
-                    Intent intent = new Intent();
-                    intent.setClass(SignUpActivity.this, LoginActivity.class);
-                    startActivity(intent);
-
-                }
-                else {
-                    Toast.makeText(SignUpActivity.this," Mật khẩu không trùng khớp", Toast.LENGTH_LONG).show();
-                }
+        isProgressing.observe(this, v -> {
+            if (v) {
+                loadingDialog.show();
+            } else {
+                loadingDialog.cancel();
             }
         });
 
-        // chuyen lien ket sang trang dang nhap
-        tvSignInLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentLogin = new Intent(SignUpActivity.this, LoginActivity.class);
-                startActivity(intentLogin);
-            }
+        TextView tvSignInLink = findViewById(R.id.tvSignInLink);
+        tvSignInLink.setOnClickListener(v -> {
+            startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+            finish();
         });
-
+        backBtn.setOnClickListener(v -> {
+            finish();
+        });
     }
-//ham dang ky tai khoan tren firebase authebtication
-private void registerByEmailAndPass(String email, String pass,String name){
-    mAuth = FirebaseAuth.getInstance();
-    mAuth.createUserWithEmailAndPassword(email,pass).addOnCompleteListener(this,task -> {
-        if (task.isSuccessful()){
+
+    private void onSignUp() {
+        isProgressing.setValue(true);
+        String email = edtEmail.getText().toString().trim();
+        String password = edtPassword.getText().toString();
+        String confirmPassword = edtComfirmPass.getText().toString();
+        String name = etName.getText().toString().trim();
+
+        if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+            isProgressing.setValue(false);
+            Toast.makeText(SignUpActivity.this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
             return;
         }
-        else {
-            Toast.makeText(this,"Tạo tài khoản không thành công "+task.getException().getMessage()
-                    ,Toast.LENGTH_LONG).show();
+
+        if (password.length() < 6) {
+            isProgressing.setValue(false);
+            Toast.makeText(SignUpActivity.this, "Mật khẩu phải có ít nhất 6 ký tự", Toast.LENGTH_SHORT).show();
+            return;
         }
-    });
-}
+
+        if (!password.equals(confirmPassword)) {
+            isProgressing.setValue(false);
+            Toast.makeText(SignUpActivity.this, "Mật khẩu xác nhận không khớp", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (name.isEmpty()) {
+            isProgressing.setValue(false);
+            Toast.makeText(SignUpActivity.this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!cbTerms.isChecked()) {
+            isProgressing.setValue(false);
+            Toast.makeText(this, "Vui lòng đồng ý điều khoản trước khi đăng ký", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        appFirebase.getFirebaseAuth().createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful() && task.getResult().getUser() != null) {
+                        FirebaseUser user = task.getResult().getUser();
+                        Map<String, Object> userData = new HashMap<>();
+                        userData.put("name", name);
+                        userData.put("created_date", FieldValue.serverTimestamp());
+                        userData.put("updated_date", FieldValue.serverTimestamp());
+                        userData.put("avatar", "https://res.cloudinary.com/flower-store/image/upload/q_auto:low,w_100,h_100,f_webp/v1733504138/mrxglys3bp4jjxyliapm.png");
+                        userData.put("birthday", null);
+                        userData.put("phoneNumber", null);
+                        userData.put("gender", null);
+                        userData.put("status", "active");
+                        userData.put("role", "customer");
+                        appFirebase.getUsersCollection().document(user.getUid()).set(userData).addOnCompleteListener(this, firestoreTask -> {
+                            if (firestoreTask.isSuccessful()) {
+                                Toast.makeText(SignUpActivity.this, "Đăng ký thành công", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(SignUpActivity.this, "Lỗi!!!", Toast.LENGTH_SHORT).show();
+                            }
+                            isProgressing.setValue(false);
+                            Intent intent = new Intent(this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        });
+                    } else {
+                        isProgressing.setValue(false);
+                        Exception exception = task.getException();
+                        if (exception instanceof FirebaseAuthUserCollisionException)
+                            Toast.makeText(this, "Email đã tồn tại", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void initLayout() {
+        btnSignup = findViewById(R.id.btnSignUp);
+        edtEmail = findViewById(R.id.edtEmail);
+        edtPassword = findViewById(R.id.edtPassword);
+        edtComfirmPass = findViewById(R.id.edtConfirmPassword);
+        etName = findViewById(R.id.edtName);
+        backBtn = findViewById(R.id.iv_back);
+        cbTerms = findViewById(R.id.cbTerms);
+    }
 
 }
-
