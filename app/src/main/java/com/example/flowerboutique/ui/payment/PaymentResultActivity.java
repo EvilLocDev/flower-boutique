@@ -33,15 +33,20 @@ public class PaymentResultActivity extends AppCompatActivity {
 
             if ("00".equals(responseCode)) {
                 tvMessage.setText("Thanh toán thành công qua VNPay!");
-                updateOrderStatus(orderId, "success");
+                updateOrderStatus(orderId, "paid");
             } else {
                 tvMessage.setText("Giao dịch không thành công hoặc đã bị hủy.");
                 updateOrderStatus(orderId, "failed");
             }
         } else {
             // 2. Xử lý dữ liệu truyền qua Intent thông thường (nếu có)
+            String status = getIntent().getStringExtra("status");
             String message = getIntent().getStringExtra("message");
+            String orderId = getIntent().getStringExtra("orderId");
             tvMessage.setText(message);
+            if (status != null && orderId != null) {
+                updateOrderStatus(orderId, status);
+            }
         }
 
         btnHome.setOnClickListener(v -> {
@@ -54,29 +59,22 @@ public class PaymentResultActivity extends AppCompatActivity {
 
     private void updateOrderStatus(String orderId, String status) {
         if (orderId == null || orderId.trim().isEmpty()) {
-            Toast.makeText(this, "Không tìm thấy mã đơn hàng từ VNPay", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String firebaseStatus = "pending";
-        if (status.equals("success")) firebaseStatus = "paid";
-        else if (status.equals("failed")) firebaseStatus = "failed";
-
         // In ra Logcat để bạn dễ dò xem orderId truyền về có chính xác không
-        Log.d("VNPAY_RESULT", "Đang cập nhật OrderID: " + orderId + " thành: " + firebaseStatus);
+        Log.d("VNPAY_RESULT", "Đang cập nhật OrderID: " + orderId + " thành: " + status);
 
         FirebaseFirestore.getInstance().collection("orders").document(orderId)
                 .update(
-                        "status", firebaseStatus,
-                        "payment_date", firebaseStatus.equals("paid") ? FieldValue.serverTimestamp() : null
+                        "status", status,
+                        "payment_date", status.equals("paid") ? FieldValue.serverTimestamp() : null
                 )
                 .addOnSuccessListener(aVoid -> {
                     Log.d("VNPAY_RESULT", "Cập nhật Firestore thành công!");
-                    Toast.makeText(PaymentResultActivity.this, "Đã ghi nhận thanh toán thành công vào DB!", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
                     Log.e("VNPAY_RESULT", "Lỗi Firestore: ", e);
-                    Toast.makeText(PaymentResultActivity.this, "Lỗi cập nhật CSDL: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
     }
 }

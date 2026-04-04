@@ -23,9 +23,7 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.FlowerBoutique">
-        <activity
-            android:name=".ui.productdetail.AddReviewDialogActivity"
-            android:exported="false" />
+
         <activity
             android:name=".ui.admin.AdminActivity"
             android:exported="false" />
@@ -49,6 +47,9 @@
             android:exported="false" />
         <activity
             android:name=".ui.admin.orders.OrderManagementActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.main_home.ProductSearchActivity"
             android:exported="false" />
         <activity
             android:name=".ui.main_home.MainActivity"

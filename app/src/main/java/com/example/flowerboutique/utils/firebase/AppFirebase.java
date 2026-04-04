@@ -47,7 +47,7 @@ public class AppFirebase {
             // Nếu không có tên, trả về Email. Nếu không có cả Email thì trả về UID
             return user.getEmail() != null ? user.getEmail() : user.getUid();
         }
-        // Trả về "Guest" nếu người dùng chưa đăng nhập
-        return "Guest";
+        // Trả về "Customer" nếu người dùng chưa đăng nhập
+        return "Customer";
     }
 }
