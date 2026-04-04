@@ -4,7 +4,6 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -13,18 +12,15 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.flowerboutique.R;
 import com.example.flowerboutique.utils.adapters.OverviewProductAdapter;
-import com.example.flowerboutique.utils.firebase.AppFirebase;
-import com.google.firebase.Timestamp;
 
-import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class ProductSearchActivity extends AppCompatActivity {
 
@@ -35,24 +31,22 @@ public class ProductSearchActivity extends AppCompatActivity {
     private ProgressBar pbLoading;
 
     private OverviewProductAdapter adapter;
-    private List<OverviewProductAdapter.OverviewProduct> allProducts = new ArrayList<>();
-    private List<OverviewProductAdapter.OverviewProduct> filteredList = new ArrayList<>();
-
-    private final AppFirebase appFirebase = new AppFirebase();
+    private ProductSearchViewModel viewModel;
+    private final List<OverviewProductAdapter.OverviewProduct> displayList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            setContentView(R.layout.main_product_search);
-            initViews();
-            setupRecyclerView();
-            loadAllProducts();
-            setupEvents();
-        } catch (Exception e) {
-            Log.e("SEARCH_ERROR", "Lỗi khởi tạo: " + e.getMessage());
-            finish();
-        }
+        setContentView(R.layout.main_product_search);
+
+        viewModel = new ViewModelProvider(this).get(ProductSearchViewModel.class);
+
+        initViews();
+        setupRecyclerView();
+        observeViewModel();
+        setupEvents();
+
+        viewModel.loadAllProducts();
     }
 
     private void initViews() {
@@ -65,14 +59,35 @@ public class ProductSearchActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
-        adapter = new OverviewProductAdapter(filteredList);
+        adapter = new OverviewProductAdapter(displayList);
         rvResults.setLayoutManager(new GridLayoutManager(this, 2));
         
-        // Thêm khoảng cách 12dp giữa các item để trông đẹp hơn
-        int spacing = (int) (8 * getResources().getDisplayMetrics().density);
+        int spacing = (int) (12 * getResources().getDisplayMetrics().density);
         rvResults.addItemDecoration(new GridSpacingItemDecoration(2, spacing, true));
         
         rvResults.setAdapter(adapter);
+    }
+
+    private void observeViewModel() {
+        viewModel.getFilteredProducts().observe(this, products -> {
+            displayList.clear();
+            if (products != null) {
+                displayList.addAll(products);
+            }
+            adapter.notifyDataSetChanged();
+            
+            // Hiển thị thông báo nếu không có kết quả (chỉ khi đã nhập text)
+            String query = etSearch.getText().toString();
+            if (!query.isEmpty() && displayList.isEmpty()) {
+                tvNoResults.setVisibility(View.VISIBLE);
+            } else {
+                tvNoResults.setVisibility(View.GONE);
+            }
+        });
+
+        viewModel.getIsLoading().observe(this, isLoading -> {
+            pbLoading.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+        });
     }
 
     private void setupEvents() {
@@ -87,69 +102,12 @@ public class ProductSearchActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String query = s.toString();
                 btnClear.setVisibility(query.isEmpty() ? View.GONE : View.VISIBLE);
-                filterProducts(query);
+                viewModel.filter(query);
             }
 
             @Override
             public void afterTextChanged(Editable s) {}
         });
-    }
-
-    private void loadAllProducts() {
-        pbLoading.setVisibility(View.VISIBLE);
-        appFirebase.getProductsCollection().get()
-                .addOnSuccessListener(result -> {
-                    allProducts.clear();
-                    result.getDocuments().forEach(snapshot -> {
-                        try {
-                            String name = snapshot.getString("name");
-                            
-                            // Xử lý ảnh an toàn tránh crash do ép kiểu
-                            Object imgObj = snapshot.get("image");
-                            String thumbnail = "";
-                            if (imgObj instanceof List) {
-                                List<String> images = (List<String>) imgObj;
-                                if (!images.isEmpty()) thumbnail = images.get(0);
-                            }
-                            
-                            Long price = snapshot.getLong("price") != null ? snapshot.getLong("price") : 0L;
-                            String id = snapshot.getId();
-                            Timestamp createdDate = snapshot.getTimestamp("created_date");
-                            
-                            allProducts.add(new OverviewProductAdapter.OverviewProduct(id, name, price, thumbnail, createdDate));
-                        } catch (Exception e) {
-                            Log.e("SEARCH_ERROR", "Lỗi parse product: " + e.getMessage());
-                        }
-                    });
-                    pbLoading.setVisibility(View.GONE);
-                })
-                .addOnFailureListener(e -> {
-                    pbLoading.setVisibility(View.GONE);
-                    Log.e("SEARCH_ERROR", "Lỗi tải Firestore: " + e.getMessage());
-                });
-    }
-
-    private void filterProducts(String query) {
-        filteredList.clear();
-        if (query.trim().isEmpty()) {
-            tvNoResults.setVisibility(View.GONE);
-        } else {
-            String normalizedQuery = removeAccent(query);
-            for (OverviewProductAdapter.OverviewProduct product : allProducts) {
-                if (removeAccent(product.getName()).contains(normalizedQuery)) {
-                    filteredList.add(product);
-                }
-            }
-            tvNoResults.setVisibility(filteredList.isEmpty() ? View.VISIBLE : View.GONE);
-        }
-        adapter.notifyDataSetChanged();
-    }
-
-    public String removeAccent(String s) {
-        if (s == null) return "";
-        String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
-        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-        return pattern.matcher(temp).replaceAll("").toLowerCase().replaceAll("đ", "d").replace("Đ", "d");
     }
 
     public static class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
