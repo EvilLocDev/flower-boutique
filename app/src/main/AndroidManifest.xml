@@ -34,6 +34,10 @@
             android:name=".ui.admin.categories.AdminCategoryDetailActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.admin.products.AdminProductDetailActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
             android:name=".ui.admin.users.AdminUserManagementActivity"
             android:exported="false" />
         <activity
