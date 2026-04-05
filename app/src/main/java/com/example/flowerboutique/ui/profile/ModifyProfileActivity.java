@@ -63,7 +63,7 @@ public class ModifyProfileActivity extends AppCompatActivity {
             return;
         }
 
-        initProfile(); //fill thông tin
+        initProfile();
 
         datePicker.addOnPositiveButtonClickListener(v -> {
             binding.birthday.setText(dateFormat.format(new Date(v)));
@@ -86,11 +86,6 @@ public class ModifyProfileActivity extends AppCompatActivity {
                 Toast.makeText(this, "Không để tên trống", Toast.LENGTH_LONG).show();
                 return;
             }
-            if (phoneNumber.isEmpty()) {
-                Toast.makeText(this, "Không để số điện thoại trống", Toast.LENGTH_LONG).show();
-                return;
-            }
-
 
             Map<String, Object> updatedData = new HashMap<>();
             updatedData.put("name", name);
@@ -118,7 +113,6 @@ public class ModifyProfileActivity extends AppCompatActivity {
         });
     }
 
-    // fill thong tin
     private void initProfile() {
         appFirebase.getUsersCollection().document(user.getUid()).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -135,7 +129,6 @@ public class ModifyProfileActivity extends AppCompatActivity {
         });
     }
 
-    // load avt
     private void uploadAvatarToCloudinary(android.net.Uri uri, Map<String, Object> updatedData) {
         com.cloudinary.android.MediaManager.get().upload(uri)
                 .option("folder", "avatars")
