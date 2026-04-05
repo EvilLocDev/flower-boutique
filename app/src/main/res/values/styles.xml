@@ -7,4 +7,9 @@
         <item name="colorControlHighlight">#ffff00</item> <!-- Thêm dòng này -->
     </style>
 
+    <style name="Widget.Theme.FlowerBoutique.MyView" parent="">
+        <item name="android:background">@color/gray_400</item>
+        <item name="exampleColor">@color/light_blue_400</item>
+    </style>
+
 </resources>

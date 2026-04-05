@@ -24,6 +24,9 @@
         android:theme="@style/Theme.FlowerBoutique"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".orderHistory"
+            android:exported="false" />
+        <activity
             android:name=".ui.admin.dashboard.AdminDashboardActivity"
             android:exported="false" />
         <activity
