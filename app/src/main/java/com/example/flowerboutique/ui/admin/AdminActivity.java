@@ -12,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.flowerboutique.R;
 import com.example.flowerboutique.databinding.ActivityAdminBinding;
 import com.example.flowerboutique.ui.admin.categories.AdminCategoryManagementActivity;
+import com.example.flowerboutique.ui.admin.dashboard.AdminDashboardActivity;
 import com.example.flowerboutique.ui.admin.orders.OrderManagementActivity;
 import com.example.flowerboutique.ui.admin.products.AdminProductManagementActivity;
 import com.example.flowerboutique.ui.admin.users.AdminUserManagementActivity;
@@ -52,6 +53,10 @@ public class AdminActivity extends AppCompatActivity {
 
         binding.categoryManagementBtn.setOnClickListener(v -> {
             startActivity(new Intent(this, AdminCategoryManagementActivity.class));
+        });
+
+        binding.dashboardAdminBtn.setOnClickListener(v -> {
+            startActivity(new Intent(this, AdminDashboardActivity.class));
         });
     }
 }
