@@ -36,6 +36,11 @@ public class AddReviewDialog extends DialogFragment {
             String reviewText = reviewEditText.getText().toString().trim();
             int rate = (int) ratingBar.getRating();
 
+            if (rate <= 0) {
+                Toast.makeText(getContext(), "Vui lòng chọn số sao để đánh giá!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (reviewText.isEmpty()) {
                 Toast.makeText(getContext(), "Vui lòng nhập đánh giá!", Toast.LENGTH_SHORT).show();
                 return;

@@ -18,7 +18,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/img_section"
                 android:layout_width="match_parent"
@@ -34,7 +33,6 @@
                     app:layout_constraintDimensionRatio="8:7"
                     app:layout_constraintTop_toTopOf="parent"
                     android:background="#DC9EB2B6"/>
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.divider.MaterialDivider
@@ -65,7 +63,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="Tên danh mục" />
-
 
                     <TextView
                         android:id="@+id/rate"
@@ -99,8 +96,6 @@
                     android:text="Mô tả sản phẩm"
                     android:textSize="20sp" />
 
-
-
                 <TextView
                     android:id="@+id/product_description"
                     android:layout_width="match_parent"
@@ -108,20 +103,43 @@
                     android:justificationMode="inter_word"
                     android:textColor="#7B7B7B"
                     android:textSize="17sp"
-                    tools:text="Hoa kỉ niệm là món quà tinh tế mang theo thông điệp yêu thương và những dấu ấn khó quên trong mỗi chặng đường của cuộc sống. Được thiết kế hài hòa từ những loài hoa tươi tuyển chọn kỹ lưỡng, sản phẩm không chỉ nổi bật bởi vẻ đẹp rực rỡ mà còn chứa đựng ý nghĩa sâu sắc về tình cảm, sự trân trọng và gắn kết."/>
-                <Button
-                    android:id="@+id/addReviewBtn"
-                    android:layout_width="wrap_content"
+                    tools:text="Hoa kỉ niệm là món quà tinh tế..."/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Thêm đánh giá" />
+                    android:layout_marginTop="24dp">
 
+                    <TextView
+                        android:id="@+id/tvReviewTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Đánh giá sản phẩm"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
+                    <Button
+                        android:id="@+id/addReviewBtn"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Thêm đánh giá"
+                        android:textColor="#388E3C"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/reviews_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp" />
+                    android:layout_marginTop="8dp"
+                    android:nestedScrollingEnabled="false"
+                    tools:listitem="@layout/item_review" />
+
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
@@ -151,62 +169,18 @@
                 tools:text="200,000 đ" />
 
             <Button
-                style="@style/Widget.Material3.Button.Icon"
                 android:id="@+id/add_cart_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="10sp"
                 android:text="Thêm vào giỏ hàng"
                 app:icon="@drawable/ic_menu_cart"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:shapeAppearance="@style/RoundedSquare.30Percent" />
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <Button
-        android:id="@+id/back_btn"
-        android:layout_width="43dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="11dp"
-        android:layout_marginTop="11dp"
-        android:insetLeft="0dp"
-        android:insetTop="0dp"
-        android:insetRight="0dp"
-        android:insetBottom="0dp"
-        app:backgroundTint="@color/white"
-        app:elevation="20dp"
-        app:icon="@drawable/ic_back"
-        app:iconGravity="textStart"
-        app:iconPadding="3dp"
-        app:iconSize="35dp"
-        app:iconTint="@color/black"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:strokeColor="@color/black"
-        app:strokeWidth="1dp" />
+    <Button android:id="@+id/back_btn" android:layout_width="43dp" android:layout_height="43dp" android:layout_marginStart="11dp" android:layout_marginTop="11dp" app:icon="@drawable/ic_back" app:layout_constraintLeft_toLeftOf="parent" app:layout_constraintTop_toTopOf="parent" />
+    <Button android:id="@+id/cart_btn" android:layout_width="43dp" android:layout_height="43dp" android:layout_marginTop="11dp" android:layout_marginEnd="11dp" app:icon="@drawable/ic_menu_cart" app:layout_constraintRight_toRightOf="parent" app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/cart_btn"
-        android:layout_width="43dp"
-        android:layout_height="43dp"
-        android:layout_gravity="end"
-        android:layout_marginTop="11dp"
-        android:layout_marginEnd="11dp"
-        android:insetLeft="0dp"
-        android:insetTop="0dp"
-        android:insetRight="0dp"
-        android:insetBottom="0dp"
-        app:backgroundTint="@color/white"
-        app:elevation="20dp"
-        app:icon="@drawable/ic_menu_cart"
-        app:iconGravity="textStart"
-        app:iconPadding="0dp"
-        app:iconSize="30dp"
-        app:iconTint="@color/black"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:strokeColor="@color/black"
-        app:strokeWidth="1dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

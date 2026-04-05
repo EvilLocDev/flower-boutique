@@ -70,16 +70,41 @@ public class ProductDetailActivity extends AppCompatActivity {
         reviewAdapter = new ReviewAdapter(new ArrayList<>());
         reviewsRecyclerView.setAdapter(reviewAdapter);
         loginDialog = new AuthenDialog();
+//        addReviewDialog = new AddReviewDialog((reviewText, rate) -> {
+//            String productId = getIntent().getStringExtra("id");
+//            if (productId != null) {
+//                FirebaseFirestore db = FirebaseFirestore.getInstance();
+//                DocumentReference productRef = db.collection("products").document(productId);
+//
+//
+//                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//                DocumentReference userRef = db.collection("users").document(userId);
+//
+//
+//                Timestamp currentDate = Timestamp.now();
+//                Review newReview = new Review(reviewText, rate, userRef, currentDate, currentDate);
+//
+//                productRef.collection("reviews").add(newReview)
+//                        .addOnSuccessListener(documentReference -> {
+//                            Toast.makeText(ProductDetailActivity.this, "Đánh giá thành công!", Toast.LENGTH_SHORT).show();
+//                            fetchProduct(); // Refresh reviews and product average rating
+//                        })
+//                        .addOnFailureListener(e -> {
+//                            Toast.makeText(ProductDetailActivity.this, "Đánh giá thất bại!", Toast.LENGTH_SHORT).show();
+//                        });
+//            }
+//        });
+
+
         addReviewDialog = new AddReviewDialog((reviewText, rate) -> {
             String productId = getIntent().getStringExtra("id");
-            if (productId != null) {
+            // LẤY USER HIỆN TẠI RA TRƯỚC
+            com.google.firebase.auth.FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+            if (productId != null && currentUser != null) { // KIỂM TRA currentUser KHÁC NULL
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 DocumentReference productRef = db.collection("products").document(productId);
-
-
-                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                DocumentReference userRef = db.collection("users").document(userId);
-
+                DocumentReference userRef = db.collection("users").document(currentUser.getUid());
 
                 Timestamp currentDate = Timestamp.now();
                 Review newReview = new Review(reviewText, rate, userRef, currentDate, currentDate);
@@ -87,11 +112,13 @@ public class ProductDetailActivity extends AppCompatActivity {
                 productRef.collection("reviews").add(newReview)
                         .addOnSuccessListener(documentReference -> {
                             Toast.makeText(ProductDetailActivity.this, "Đánh giá thành công!", Toast.LENGTH_SHORT).show();
-                            fetchProduct(); // Refresh reviews and product average rating
+                            fetchProduct();
                         })
                         .addOnFailureListener(e -> {
                             Toast.makeText(ProductDetailActivity.this, "Đánh giá thất bại!", Toast.LENGTH_SHORT).show();
                         });
+            } else {
+                Toast.makeText(this, "Vui lòng đăng nhập lại để đánh giá!", Toast.LENGTH_SHORT).show();
             }
         });
 
