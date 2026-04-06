@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -18,14 +19,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.flowerboutique.R;
 import com.example.flowerboutique.utils.adapters.OverviewProductAdapter;
+import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductSearchActivity extends AppCompatActivity {
 
-    private EditText etSearch;
+    private EditText etSearch, etMinPrice, etMaxPrice;
     private ImageButton btnBack, btnClear;
+    private Button btnApplyFilter;
+    private ChipGroup cgSort;
     private RecyclerView rvResults;
     private TextView tvNoResults;
     private ProgressBar pbLoading;
@@ -51,8 +55,12 @@ public class ProductSearchActivity extends AppCompatActivity {
 
     private void initViews() {
         etSearch = findViewById(R.id.et_search);
+        etMinPrice = findViewById(R.id.et_min_price);
+        etMaxPrice = findViewById(R.id.et_max_price);
         btnBack = findViewById(R.id.btn_back);
         btnClear = findViewById(R.id.btn_clear);
+        btnApplyFilter = findViewById(R.id.btn_apply_filter);
+        cgSort = findViewById(R.id.cg_sort);
         rvResults = findViewById(R.id.rv_search_results);
         tvNoResults = findViewById(R.id.tv_no_results);
         pbLoading = findViewById(R.id.pb_loading);
@@ -76,9 +84,7 @@ public class ProductSearchActivity extends AppCompatActivity {
             }
             adapter.notifyDataSetChanged();
             
-            // Hiển thị thông báo nếu không có kết quả (chỉ khi đã nhập text)
-            String query = etSearch.getText().toString();
-            if (!query.isEmpty() && displayList.isEmpty()) {
+            if (displayList.isEmpty()) {
                 tvNoResults.setVisibility(View.VISIBLE);
             } else {
                 tvNoResults.setVisibility(View.GONE);
@@ -102,11 +108,31 @@ public class ProductSearchActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String query = s.toString();
                 btnClear.setVisibility(query.isEmpty() ? View.GONE : View.VISIBLE);
-                viewModel.filter(query);
+                viewModel.setQuery(query);
             }
 
             @Override
             public void afterTextChanged(Editable s) {}
+        });
+
+        btnApplyFilter.setOnClickListener(v -> {
+            String minStr = etMinPrice.getText().toString().trim();
+            String maxStr = etMaxPrice.getText().toString().trim();
+
+            Long minPrice = minStr.isEmpty() ? null : Long.parseLong(minStr);
+            Long maxPrice = maxStr.isEmpty() ? null : Long.parseLong(maxStr);
+
+            viewModel.setPriceFilter(minPrice, maxPrice);
+        });
+
+        cgSort.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.chip_price_asc) {
+                viewModel.setSortType(ProductSearchViewModel.SortType.PRICE_ASC);
+            } else if (checkedId == R.id.chip_price_desc) {
+                viewModel.setSortType(ProductSearchViewModel.SortType.PRICE_DESC);
+            } else {
+                viewModel.setSortType(ProductSearchViewModel.SortType.NONE);
+            }
         });
     }
 

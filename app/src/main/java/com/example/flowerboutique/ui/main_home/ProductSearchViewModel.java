@@ -10,15 +10,26 @@ import com.google.firebase.Timestamp;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
 public class ProductSearchViewModel extends ViewModel {
 
+    public enum SortType {
+        NONE, PRICE_ASC, PRICE_DESC
+    }
+
     private final MutableLiveData<List<OverviewProductAdapter.OverviewProduct>> filteredProducts = new MutableLiveData<>();
     private final List<OverviewProductAdapter.OverviewProduct> allProducts = new ArrayList<>();
     private final AppFirebase appFirebase = new AppFirebase();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
+
+    private String currentQuery = "";
+    private Long currentMinPrice = null;
+    private Long currentMaxPrice = null;
+    private SortType currentSortType = SortType.NONE;
 
     public LiveData<List<OverviewProductAdapter.OverviewProduct>> getFilteredProducts() {
         return filteredProducts;
@@ -51,23 +62,48 @@ public class ProductSearchViewModel extends ViewModel {
                         }
                     });
                     isLoading.setValue(false);
+                    applyFilters();
                 })
                 .addOnFailureListener(e -> isLoading.setValue(false));
     }
 
-    public void filter(String query) {
-        if (query == null || query.trim().isEmpty()) {
-            filteredProducts.setValue(new ArrayList<>());
-            return;
-        }
-        
-        String normalizedQuery = removeAccent(query);
+    public void setQuery(String query) {
+        this.currentQuery = query;
+        applyFilters();
+    }
+
+    public void setPriceFilter(Long minPrice, Long maxPrice) {
+        this.currentMinPrice = minPrice;
+        this.currentMaxPrice = maxPrice;
+        applyFilters();
+    }
+
+    public void setSortType(SortType sortType) {
+        this.currentSortType = sortType;
+        applyFilters();
+    }
+
+    private void applyFilters() {
         List<OverviewProductAdapter.OverviewProduct> result = new ArrayList<>();
+        String normalizedQuery = removeAccent(currentQuery);
+
         for (OverviewProductAdapter.OverviewProduct product : allProducts) {
-            if (removeAccent(product.getName()).contains(normalizedQuery)) {
+            boolean matchesQuery = currentQuery.isEmpty() || removeAccent(product.getName()).contains(normalizedQuery);
+            boolean matchesMinPrice = currentMinPrice == null || product.getPrice() >= currentMinPrice;
+            boolean matchesMaxPrice = currentMaxPrice == null || product.getPrice() <= currentMaxPrice;
+
+            if (matchesQuery && matchesMinPrice && matchesMaxPrice) {
                 result.add(product);
             }
         }
+
+        // Sắp xếp
+        if (currentSortType == SortType.PRICE_ASC) {
+            Collections.sort(result, Comparator.comparingLong(OverviewProductAdapter.OverviewProduct::getPrice));
+        } else if (currentSortType == SortType.PRICE_DESC) {
+            Collections.sort(result, (p1, p2) -> Long.compare(p2.getPrice(), p1.getPrice()));
+        }
+
         filteredProducts.setValue(result);
     }
 
