@@ -176,7 +176,7 @@ public class MakeOrderActivity extends AppCompatActivity {
         HashMap<String, Object> order = new HashMap<>();
         // Nếu user == null thì để "guest", ngược lại lấy UID
         order.put("user_id", user != null ? user.getUid() : "guest");
-        order.put("status", "pending_payment"); // Trạng thái chờ thanh toán VNPay
+        order.put("status", "paying"); // Trạng thái chờ thanh toán VNPay
         order.put("created_date", FieldValue.serverTimestamp());
         order.put("address", address);
         order.put("phone_number", phoneNumber);
