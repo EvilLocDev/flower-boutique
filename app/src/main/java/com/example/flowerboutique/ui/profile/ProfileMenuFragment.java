@@ -68,6 +68,7 @@ public class ProfileMenuFragment extends Fragment {
         LinearLayout cartBtn = view.findViewById(R.id.cart_btn);
         LinearLayout logoutBtn = view.findViewById(R.id.logout_button);
         LinearLayout orderBtn = view.findViewById(R.id.order_btn);
+        LinearLayout hisBtn = view.findViewById(R.id.history_btn);
         Button adminBtn = view.findViewById(R.id.admin_btn);
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
@@ -96,6 +97,9 @@ public class ProfileMenuFragment extends Fragment {
         });
         logoutBtn.setOnClickListener(v -> {
             alertDialog.show();
+        });
+        hisBtn.setOnClickListener(v -> {
+            context.startActivity(new Intent(context, HistoryOrderActivity.class));
         });
         adminBtn.setOnClickListener(v -> {
             startActivity(new Intent(getContext(), AdminActivity.class));
