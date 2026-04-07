@@ -40,10 +40,13 @@
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".ui.admin.users.AdminUserManagementActivity"
+            android:name=".ui.admin.products.AdminProductManagementActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.admin.products.AdminProductManagementActivity"
+            android:name=".ui.admin.users.AdminUserDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.admin.users.AdminUserManagementActivity"
             android:exported="false" />
         <activity
             android:name=".ui.orders.CustomerOrdersActivity"
