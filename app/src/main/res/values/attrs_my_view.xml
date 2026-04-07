@@ -1,8 +1,13 @@
 <resources>
+    <attr name="exampleString" format="string" />
+    <attr name="exampleDimension" format="dimension" />
+    <attr name="exampleColor" format="color" />
+    <attr name="exampleDrawable" format="color|reference" />
+
     <declare-styleable name="MyView">
-        <attr name="exampleString" format="string" />
-        <attr name="exampleDimension" format="dimension" />
-        <attr name="exampleColor" format="color" />
-        <attr name="exampleDrawable" format="color|reference" />
+        <attr name="exampleString" />
+        <attr name="exampleDimension" />
+        <attr name="exampleColor" />
+        <attr name="exampleDrawable" />
     </declare-styleable>
 </resources>

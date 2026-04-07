@@ -7,124 +7,68 @@
     android:layout_marginVertical="10sp"
     app:shapeAppearance="@style/RoundedSquare.10Percent">
 
-<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingVertical="5dp"
-    android:paddingHorizontal="15dp"
-    android:background="@android:color/white">
-
-    <!-- Mã đơn hàng và thời gian -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="#HD12345"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:layout_marginBottom="8dp" />
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="20/04/2024 14:32"
-        android:textSize="14sp"
-        android:layout_marginBottom="8dp" />
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/product_img"
+            android:layout_width="120sp"
+            android:layout_height="0sp"
+            app:layout_constraintDimensionRatio="5:4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/ic_placeholder" />
 
-    <!-- Sản phẩm và thông tin chi tiết -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="16dp">
-
-        <!-- Hình ảnh sản phẩm -->
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginEnd="16dp"
-            android:src="@drawable/ic_logo_shop" />
-
-        <!-- Thông tin sản phẩm -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0sp"
+            android:layout_height="0sp"
             android:orientation="vertical"
-            android:gravity="start">
+            android:paddingHorizontal="12sp"
+            android:paddingVertical="10sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/product_img"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
+                android:id="@+id/product_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bó hoa hồng pastel"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Tên sản phẩm" />
 
             <TextView
+                android:id="@+id/price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="20 bông hồng pastel, giấy gói Hàn Quốc, nơ lụa"
-                android:textSize="14sp"
-                android:textColor="@android:color/darker_gray" />
+                android:textSize="24sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/product_name"
+                tools:text="12,000 đ" />
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/multiply"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_horizontal"
-                android:padding="10px">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="350.000 đ"
-                    android:layout_weight="1"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
+                android:layout_marginHorizontal="10sp"
+                android:text="x"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toStartOf="@id/quantity"
+                app:layout_constraintStart_toEndOf="@id/price"
+                app:layout_constraintTop_toBottomOf="@id/product_name" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:text="x1"
-                    android:layout_weight="1"
-                    android:textSize="16sp" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-
-        </LinearLayout>
-    </LinearLayout>
-
-
-
-    <!-- Các nút hành động -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:paddingHorizontal="5dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tổng tiền: 350.000 đ"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_weight="2"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Xem chi tiết"
-            android:layout_weight="1"
-            android:textColor="@android:color/white" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Mua lại"
-            android:layout_weight="1"
-            android:textColor="@android:color/white"
-             />
-    </LinearLayout>
-</LinearLayout>
+            <TextView
+                android:id="@+id/quantity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                app:layout_constraintStart_toEndOf="@id/multiply"
+                app:layout_constraintTop_toBottomOf="@id/product_name"
+                tools:text="10" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
