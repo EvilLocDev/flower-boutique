@@ -24,11 +24,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class HomeFragment extends Fragment {
 
     MainFragmentHomeBinding binding;
@@ -42,10 +37,7 @@ public class HomeFragment extends Fragment {
     }
 
     public static HomeFragment newInstance() {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
+        return new HomeFragment();
     }
 
     @Override
@@ -53,19 +45,13 @@ public class HomeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         viewModel.loadProducts();
-        products = viewModel.getProducts();
-        productsAdapter = new OverviewProductAdapter(products);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        {
-            binding = MainFragmentHomeBinding.inflate(inflater, container, false);
-            View view = binding.getRoot();
-            initFragment();
-            initEvent();
-            return view;
-        }
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = MainFragmentHomeBinding.inflate(inflater, container, false);
+        initFragment();
+        return binding.getRoot();
     }
 
 
@@ -73,59 +59,61 @@ public class HomeFragment extends Fragment {
         @Override
         public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
             int position = parent.getChildAdapterPosition(view);
-            if (position == 0) return;
-            if (position % 2 == 0) outRect.left = 25;
-            else outRect.right = 25;
-
-            if (position <= state.getItemCount() - 3) outRect.bottom = 40;
+            if (position <= 0) return; // Header (position 0) không cần padding đặc biệt này
+            
+            // Các sản phẩm bắt đầu từ position 1
+            if (position % 2 != 0) { // Cột trái (1, 3, 5...)
+                outRect.right = 15;
+            } else { // Cột phải (2, 4, 6...)
+                outRect.left = 15;
+            }
+            outRect.bottom = 30;
         }
-    }
-
-    private void initEvent() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private void initFragment() {
-        RecyclerView recyclerView = binding.getRoot().findViewById(R.id.recycle_view);
+        products = viewModel.getProducts();
+        productsAdapter = new OverviewProductAdapter(products);
+        
         HomeLinearAdapter homeLinearAdapter = new HomeLinearAdapter();
         ConcatAdapter concatAdapter = new ConcatAdapter(homeLinearAdapter, productsAdapter);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this.getContext(), 2);
+        
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (position == 0) {
-                    return 2;
-                }
-                return 1;
+                // Vị trí 0 là HomeLinearAdapter (Header) -> Chiếm 2 cột
+                return (position == 0) ? 2 : 1;
             }
         });
-        recyclerView.setAdapter(concatAdapter);
-        recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.addItemDecoration(new SpaceItemDecoration());
-        recyclerView.addOnScrollListener(new OnScrollRecyclerView());
-        viewModel.getLiveDataProducts().observeForever(a -> {
+
+        binding.recycleView.setAdapter(concatAdapter);
+        binding.recycleView.setLayoutManager(gridLayoutManager);
+        binding.recycleView.addItemDecoration(new SpaceItemDecoration());
+        binding.recycleView.addOnScrollListener(new OnScrollRecyclerView());
+        
+        // Sử dụng getViewLifecycleOwner() để quan sát dữ liệu an toàn
+        viewModel.getLiveDataProducts().observe(getViewLifecycleOwner(), a -> {
             productsAdapter.notifyDataSetChanged();
         });
     }
 
     class OnScrollRecyclerView extends RecyclerView.OnScrollListener {
         @Override
-        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-        }
-
-        @Override
         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-            GridLayoutManager gridLayoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
+            GridLayoutManager layoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
 
-            if (!isLoading && gridLayoutManager != null && gridLayoutManager.findLastVisibleItemPosition() == products.size() - 2) {
+            if (!isLoading && layoutManager != null && layoutManager.findLastVisibleItemPosition() >= products.size() - 2) {
                 isLoading = true;
-                Task<QuerySnapshot> loading = viewModel.loadProducts();
-                if (loading != null) loading.addOnSuccessListener(v -> {
+                Task<QuerySnapshot> task = viewModel.loadProducts();
+                if (task != null) {
+                    task.addOnSuccessListener(v -> isLoading = false)
+                        .addOnFailureListener(e -> isLoading = false);
+                } else {
                     isLoading = false;
-                });
-                else isLoading = false;
+                }
             }
         }
     }

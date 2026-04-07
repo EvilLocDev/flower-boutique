@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="RatingBarYellow" parent="Widget.AppCompat.RatingBar.Small">
+        <item name="colorControlNormal">#ffffdf</item>
+        <item name="colorControlActivated">#ffff00</item>
+        <item name="colorControlHighlight">#ffff00</item> <!-- Thêm dòng này -->
+    </style>
+
+</resources>
