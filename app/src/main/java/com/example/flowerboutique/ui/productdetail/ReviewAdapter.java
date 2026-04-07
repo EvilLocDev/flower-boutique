@@ -3,6 +3,7 @@ package com.example.flowerboutique.ui.productdetail;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.flowerboutique.R;
 import com.google.firebase.firestore.DocumentReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -33,13 +35,26 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         Review review = reviewList.get(position);
         holder.contentTextView.setText(review.getContent());
 
-        // Lấy tên người dùng
         DocumentReference userRef = review.getUser();
         if (userRef != null) {
             userRef.get().addOnSuccessListener(documentSnapshot -> {
-                String userName = documentSnapshot.getString("name");
-                if (userName != null) {
-                    holder.userNameTextView.setText(userName);
+                if (documentSnapshot.exists()) {
+                    String userName = documentSnapshot.getString("name");
+                    String avatarUrl = documentSnapshot.getString("avatar");
+
+                    if (userName != null) {
+                        holder.userNameTextView.setText(userName);
+                    }
+
+                    if (avatarUrl != null && !avatarUrl.isEmpty()) {
+                        Picasso.get()
+                                .load(avatarUrl)
+                                .placeholder(R.drawable.ic_menu_profile)
+                                .error(R.drawable.ic_menu_profile)
+                                .into(holder.avatarImageView);
+                    } else {
+                        holder.avatarImageView.setImageResource(R.drawable.ic_menu_profile);
+                    }
                 }
             });
         }
@@ -51,7 +66,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
     @Override
     public int getItemCount() {
-        return reviewList.size();
+        return reviewList != null ? reviewList.size() : 0;
     }
 
     public void setReviews(List<Review> reviews) {
@@ -60,15 +75,16 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     }
 
     public static class ReviewViewHolder extends RecyclerView.ViewHolder {
-
         TextView contentTextView, userNameTextView;
         RatingBar ratingBar;
+        ImageView avatarImageView;
 
         public ReviewViewHolder(View itemView) {
             super(itemView);
             contentTextView = itemView.findViewById(R.id.review_content);
             userNameTextView = itemView.findViewById(R.id.user_name);
             ratingBar = itemView.findViewById(R.id.review_rate);
+            avatarImageView = itemView.findViewById(R.id.review_avatar);
         }
     }
 }
