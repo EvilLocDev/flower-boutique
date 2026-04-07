@@ -2,9 +2,10 @@ package com.example.flowerboutique.db.entities;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "cart_table")
+@Entity(tableName = "cart_table", indices = {@Index(value = {"product_id"}, unique = true)})
 public class CartEntity {
 
     @PrimaryKey(autoGenerate = true)

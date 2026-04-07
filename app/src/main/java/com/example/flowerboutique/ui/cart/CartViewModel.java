@@ -1,46 +1,51 @@
 package com.example.flowerboutique.ui.cart;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import android.app.Application;
 
-import java.util.ArrayList;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+
+import com.example.flowerboutique.db.RoomDB;
+import com.example.flowerboutique.db.dao.CartDAO;
+
 import java.util.List;
 
-public class CartViewModel extends ViewModel {
+public class CartViewModel extends AndroidViewModel {
 
-    private MutableLiveData<List<CartItem>> cartListLiveData = new MutableLiveData<>();
-    private MutableLiveData<Long> totalPriceLiveData = new MutableLiveData<>(0L);
+    private final CartRepository repository;
+    private final LiveData<List<CartItem>> cartListLiveData;
 
-    // Gọi file chứa logic vào đây
-    private CartRepository repository;
+    public CartViewModel(@NonNull Application application) {
+        super(application);
+        // Khởi tạo Room và truyền DAO vào Repository
+        CartDAO cartDAO = RoomDB.getInstance(application).cartDAO();
+        repository = new CartRepository(cartDAO);
 
-    public CartViewModel() {
-        repository = new CartRepository();
-        updateLiveData();
+        // Lấy LiveData đã được Repository xử lý (Gộp Room + Firestore)
+        cartListLiveData = repository.getCartItemsWithDetails();
     }
 
-    public LiveData<List<CartItem>> getCartListLiveData() { return cartListLiveData; }
-    public LiveData<Long> getTotalPriceLiveData() { return totalPriceLiveData; }
+    // Fragment/Activity sẽ observe cái này để vẽ RecyclerView
+    public LiveData<List<CartItem>> getCartListLiveData() {
+        return cartListLiveData;
+    }
 
+    // Fragment/Activity sẽ observe cái này để hiển thị Text tổng tiền
+    public LiveData<Long> getTotalPriceLiveData() {
+        return repository.getTotalPriceLiveData();
+    }
+
+    // Các hàm tương tác từ UI đẩy xuống
     public void increaseQuantity(CartItem item) {
-        repository.increaseQuantity(item); // Nhờ Repository xử lý logic
-        updateLiveData(); // Cập nhật lại UI
+        repository.increaseQuantity(item.getId()); // getId() ở đây trả về product_id
     }
 
     public void decreaseQuantity(CartItem item) {
-        repository.decreaseQuantity(item);
-        updateLiveData();
+        repository.decreaseQuantity(item.getId());
     }
 
     public void removeItem(CartItem item) {
-        repository.removeItem(item);
-        updateLiveData();
-    }
-
-    // Hàm đồng bộ dữ liệu từ Repository lên LiveData
-    private void updateLiveData() {
-        cartListLiveData.setValue(new ArrayList<>(repository.getCartItems()));
-        totalPriceLiveData.setValue(repository.calculateTotal());
+        repository.removeItem(item.getId());
     }
 }

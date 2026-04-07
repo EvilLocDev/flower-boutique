@@ -13,6 +13,8 @@ roomCompiler = "2.8.4"
 cloudinaryAndroid = "3.1.2"
 firebaseFirestore = "26.1.2"
 picasso = "2.8"
+firebaseDatabase = "22.0.1"
+lifecycleLivedata = "2.10.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -27,6 +29,8 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
 cloudinary-android = { group = "com.cloudinary", name = "cloudinary-android", version.ref = "cloudinaryAndroid" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
+lifecycle-livedata = { group = "androidx.lifecycle", name = "lifecycle-livedata", version.ref = "lifecycleLivedata" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

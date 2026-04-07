@@ -60,6 +60,8 @@ dependencies {
         "include" to listOf("*.aar", "*.jar"),
         "exclude" to listOf<String>()
     )))
+    implementation(libs.firebase.database)
+    implementation(libs.lifecycle.livedata)
     annotationProcessor(libs.room.compiler)
     implementation(libs.appcompat)
     implementation(libs.material)

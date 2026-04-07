@@ -180,7 +180,10 @@ public class ProductDetailActivity extends AppCompatActivity {
             Picasso.get().load(images.get(0)).into(binding.productImg);
 
             binding.addCartBtn.setOnClickListener(v -> {
-                roomDB.cartDAO().increaseProductInCart(snapshot.getId());
+                // Đưa lệnh gọi database vào Thread ngầm
+                new Thread(() -> {
+                    roomDB.cartDAO().increaseProductInCart(snapshot.getId());
+                }).start();
                 AddCartDialog dialog = new AddCartDialog();
                 dialog.show(getSupportFragmentManager(), AddCartDialog.TAG);
             });

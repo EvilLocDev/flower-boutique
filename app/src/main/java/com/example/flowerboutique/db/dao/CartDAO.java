@@ -43,4 +43,11 @@ public interface CartDAO {
             modifyQuantity(1, id);
         }
     }
+
+    // Bổ sung vào trong interface CartDAO
+    @Query("UPDATE cart_table SET quantity = quantity - 1 WHERE product_id = :id AND quantity > 1")
+    void decreaseQuantity(String id);
+
+    @Query("DELETE FROM cart_table WHERE product_id = :id")
+    void deleteItem(String id);
 }
