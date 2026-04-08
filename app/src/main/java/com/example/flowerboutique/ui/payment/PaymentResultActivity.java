@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.flowerboutique.R;
 import com.example.flowerboutique.ui.main_home.HomeActivity;
+import com.example.flowerboutique.ui.orders.CustomerOrdersActivity;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -24,6 +25,7 @@ public class PaymentResultActivity extends AppCompatActivity {
 
         TextView tvMessage = findViewById(R.id.message);
         Button btnHome = findViewById(R.id.back_to_home);
+        Button btnOrderDetail = findViewById(R.id.to_order_detail);
 
         // 1. Xử lý kết quả trả về từ Deep Link (VNPay Redirect)
         Uri data = getIntent().getData();
@@ -49,9 +51,33 @@ public class PaymentResultActivity extends AppCompatActivity {
             }
         }
 
+        // 2. Xử lý sự kiện "Về trang chủ"
+        btnHome.setOnClickListener(v -> {
+            // Thay HomeActivity.class bằng tên Activity màn hình chính của bạn (ví dụ: MainActivity.class)
+            Intent intent = new Intent(PaymentResultActivity.this, HomeActivity.class);
+            // Xóa tất cả các màn hình cũ đang xếp chồng lên nhau
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        });
+
         btnHome.setOnClickListener(v -> {
             Intent intent = new Intent(PaymentResultActivity.this, HomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        });
+
+        // 3. Xử lý sự kiện "Xem đơn hàng"
+        btnOrderDetail.setOnClickListener(v -> {
+            // LƯU Ý: "item_customer_order" chỉ là tên của một giao diện (Layout) chứ không phải Activity.
+            // Do đó bạn cần gọi đến Activity chứa cái danh sách đơn hàng đó (Ví dụ: OrderHistoryActivity, CustomerOrderActivity...)
+
+            Intent intent = new Intent(PaymentResultActivity.this, com.example.flowerboutique.ui.orders.CustomerOrdersActivity.class); // <- THAY TÊN ACTIVITY CỦA BẠN VÀO ĐÂY
+
+            // Bạn có thể truyền luôn mã đơn hàng vừa thanh toán sang màn hình đó để tra cứu nếu cần
+            // intent.putExtra("orderId", orderId);
+
             startActivity(intent);
             finish();
         });

@@ -12,7 +12,7 @@
         android:id="@+id/message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Vui lòng đăng nhập trước khi đánh giá"
+        android:text="Vui lòng đăng nhập để tiếp tục"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
