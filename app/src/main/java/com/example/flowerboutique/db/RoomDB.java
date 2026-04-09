@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase;
 import com.example.flowerboutique.db.entities.CartEntity;
 import com.example.flowerboutique.db.dao.CartDAO;
 
-@Database(entities = {CartEntity.class}, version = 1, exportSchema = false)
+@Database(entities = {CartEntity.class}, version = 2, exportSchema = false)
 public abstract class RoomDB extends RoomDatabase {
 
     public abstract CartDAO cartDAO();

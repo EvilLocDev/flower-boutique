@@ -60,6 +60,7 @@ public class BoutiqueApplication extends Application {
         // 4. Khởi tạo AppFirebase và Room Database
         appFirebase = new AppFirebase();
         roomDB = Room.databaseBuilder(this.getApplicationContext(), RoomDB.class, "flowerboutique_db")
+                .fallbackToDestructiveMigration()
                 .allowMainThreadQueries()
                 .build();
 
