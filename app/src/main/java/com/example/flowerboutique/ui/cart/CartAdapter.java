@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -53,6 +54,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         holder.tvPrice.setText(numberFormat.format(item.getPrice()));
         holder.tvQuantity.setText(String.valueOf(item.getQuantity()));
 
+        String imageUrl = item.getImageUrl();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            com.squareup.picasso.Picasso.get()
+                    .load(imageUrl)
+                    .into(holder.imgProduct);
+        }
+
         holder.btnIncrease.setOnClickListener(v -> {
             if (actionListener != null) actionListener.onIncrease(item);
         });
@@ -74,6 +82,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     class CartViewHolder extends RecyclerView.ViewHolder {
         TextView tvName, tvPrice, tvQuantity;
         Button btnIncrease, btnDecrease, btnTrash;
+        ImageView imgProduct;
 
         public CartViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -83,6 +92,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             btnIncrease = itemView.findViewById(R.id.btnIncreaseQuantity);
             btnDecrease = itemView.findViewById(R.id.btnDecreaseQuantity);
             btnTrash = itemView.findViewById(R.id.btn_trash);
+            imgProduct = itemView.findViewById(R.id.product_img);
         }
     }
 }

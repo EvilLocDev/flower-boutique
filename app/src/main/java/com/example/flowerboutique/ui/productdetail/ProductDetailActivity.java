@@ -179,10 +179,20 @@ public class ProductDetailActivity extends AppCompatActivity {
 
             Picasso.get().load(images.get(0)).into(binding.productImg);
 
+
             binding.addCartBtn.setOnClickListener(v -> {
-                roomDB.cartDAO().increaseProductInCart(snapshot.getId());
-                AddCartDialog dialog = new AddCartDialog();
-                dialog.show(getSupportFragmentManager(), AddCartDialog.TAG);
+                // Kiểm tra xem người dùng đã đăng nhập chưa
+                if (appFirebase.getFirebaseAuth().getCurrentUser() != null) {
+                    // Đã đăng nhập -> Thực hiện thêm vào giỏ hàng
+                    new Thread(() -> {
+                        roomDB.cartDAO().increaseProductInCart(snapshot.getId());
+                    }).start();
+                    AddCartDialog dialog = new AddCartDialog();
+                    dialog.show(getSupportFragmentManager(), AddCartDialog.TAG);
+                } else {
+                    // Chưa đăng nhập -> Hiện dialog yêu cầu đăng nhập giống như phần Review
+                    loginDialog.show(getSupportFragmentManager(), "RequireAuthenDialog");
+                }
             });
 
 

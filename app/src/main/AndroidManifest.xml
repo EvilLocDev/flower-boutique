@@ -58,6 +58,9 @@
             android:name=".ui.admin.orders.AdminOrderDetailActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.orders.CustomerOrderDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.admin.orders.OrderManagementActivity"
             android:exported="false" />
         <activity

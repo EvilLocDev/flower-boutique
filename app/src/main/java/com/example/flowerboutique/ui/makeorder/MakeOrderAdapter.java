@@ -3,6 +3,7 @@ package com.example.flowerboutique.ui.makeorder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import java.util.Locale;
 
 import com.example.flowerboutique.R;
 import com.example.flowerboutique.ui.cart.CartItem;
+import com.squareup.picasso.Picasso;
 
 public class MakeOrderAdapter extends RecyclerView.Adapter<MakeOrderAdapter.OrderViewHolder> {
 
@@ -41,7 +43,16 @@ public class MakeOrderAdapter extends RecyclerView.Adapter<MakeOrderAdapter.Orde
         holder.tvName.setText(item.getName());
         holder.tvPrice.setText(currencyFormat.format(item.getPrice()));
         holder.tvQuantity.setText(String.valueOf(item.getQuantity()));
-        // (Tùy chọn) Dùng Picasso load ảnh vào holder.imgProduct nếu cần
+
+        String imageUrl = item.getImageUrl();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Picasso.get()
+                    .load(imageUrl)
+                    .into(holder.imgProduct); // imgProduct là ImageView trong ViewHolder
+        } else {
+            // (Tùy chọn) Xử lý trường hợp không có ảnh
+            // holder.imgProduct.setImageResource(R.drawable.ic_placeholder);
+        }
     }
 
     @Override
@@ -51,12 +62,15 @@ public class MakeOrderAdapter extends RecyclerView.Adapter<MakeOrderAdapter.Orde
 
     static class OrderViewHolder extends RecyclerView.ViewHolder {
         TextView tvName, tvPrice, tvQuantity;
+        ImageView imgProduct;
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.product_name);
             tvPrice = itemView.findViewById(R.id.price);
             tvQuantity = itemView.findViewById(R.id.quantity);
+
+            imgProduct = itemView.findViewById(R.id.product_img);
         }
     }
 }

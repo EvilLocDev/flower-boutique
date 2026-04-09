@@ -40,6 +40,15 @@ public class VNPayPaymentActivity extends AppCompatActivity {
             return;
         }
 
+        Button btnCancel = findViewById(R.id.cancel_btn);
+
+        if (btnCancel != null) {
+            btnCancel.setOnClickListener(v -> {
+                // Lệnh finish() sẽ đóng màn hình hiện tại và tự động quay về MakeOrderActivity
+                finish();
+            });
+        }
+
         Button btnPayment = findViewById(R.id.payment_btn);
         btnPayment.setText("Thanh toán qua VNPay");
         btnPayment.setOnClickListener(v -> requestVNPay());
