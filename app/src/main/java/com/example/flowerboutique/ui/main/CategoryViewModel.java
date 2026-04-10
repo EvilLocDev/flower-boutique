@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.flowerboutique.utils.adapters.CategoryAdapter;
 import com.example.flowerboutique.utils.firebase.AppFirebase;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ public class CategoryViewModel extends ViewModel {
     private final List<CategoryAdapter.OverviewCategory> categories = new ArrayList<>();
     private final MutableLiveData<List<CategoryAdapter.OverviewCategory>> liveDataCategories = new MutableLiveData<>(categories);
     private final AppFirebase appFirebase = new AppFirebase();
+    private ListenerRegistration categoriesListener;
 
     public List<CategoryAdapter.OverviewCategory> getCategories() {
         return categories;
@@ -23,8 +25,12 @@ public class CategoryViewModel extends ViewModel {
     }
 
     public void loadCategories() {
-        appFirebase.getCategoriesCollection().get().addOnSuccessListener(snapshot -> {
-            categories.clear(); // Xóa dữ liệu cũ trước khi thêm dữ liệu mới
+        if (categoriesListener != null) return; // Tránh tạo nhiều listener
+
+        categoriesListener = appFirebase.getCategoriesCollection().addSnapshotListener((snapshot, e) -> {
+            if (e != null || snapshot == null) return;
+
+            categories.clear();
             snapshot.getDocuments().forEach(category -> {
                 String name = category.getString("name");
                 String thumbnail = category.getString("thumbnail");
@@ -33,5 +39,13 @@ public class CategoryViewModel extends ViewModel {
             });
             liveDataCategories.setValue(categories);
         });
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        if (categoriesListener != null) {
+            categoriesListener.remove();
+        }
     }
 }

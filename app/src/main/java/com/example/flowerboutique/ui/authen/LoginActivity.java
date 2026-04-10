@@ -22,7 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
-    Button btnLogin;
+    Button btnLogin, btnBack;
     EditText edtEmail,edtPassword;
 
     TextView tvSignInLink;
@@ -42,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         btnLogin = findViewById(R.id.btnLogin);
+        btnBack = findViewById(R.id.iv_back);
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
         tvSignInLink =findViewById(R.id.tvSignInLink);
@@ -58,6 +59,10 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        btnBack.setOnClickListener(v -> {
+            finish();
+        });
 
         tvSignInLink.setOnClickListener(new View.OnClickListener() {
             @Override

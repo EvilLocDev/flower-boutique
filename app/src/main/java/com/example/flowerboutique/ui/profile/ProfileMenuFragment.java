@@ -115,7 +115,7 @@ public class ProfileMenuFragment extends Fragment {
                     });
     }
 
-    private void initData() {
+    public void initData() {
         TextView nameTv = view.findViewById(R.id.profile_name);
         ImageView avatarImgView = view.findViewById(R.id.profile_image);
         if (appFirebase.getFirebaseAuth().getCurrentUser() == null) return;
@@ -124,7 +124,12 @@ public class ProfileMenuFragment extends Fragment {
             if (task.isSuccessful()) {
                 DocumentSnapshot result = task.getResult();
                 nameTv.setText(result.getString("name"));
-                Picasso.get().load(result.getString("avatar")).into(avatarImgView);
+                String avatarUrl = result.getString("avatar");
+                if (avatarUrl != null && !avatarUrl.isEmpty()) {
+                    Picasso.get().load(avatarUrl).placeholder(R.drawable.ic_menu_profile).into(avatarImgView);
+                } else {
+                    avatarImgView.setImageResource(R.drawable.ic_menu_profile);
+                }
             }
         });
     }

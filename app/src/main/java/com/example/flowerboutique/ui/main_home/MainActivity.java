@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.flowerboutique.BoutiqueApplication;
@@ -60,14 +61,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean onSelectHeader(MenuItem item) {
+        int position = -1;
         if (item.getItemId() == R.id.nav_home) {
-            binding.pager.setCurrentItem(0);
+            position = 0;
         } else if (item.getItemId() == R.id.nav_categories) {
-            binding.pager.setCurrentItem(1);
+            position = 1;
         } else if (item.getItemId() == R.id.nav_cart) {
-            binding.pager.setCurrentItem(2);
+            position = 2;
         } else if (item.getItemId() == R.id.nav_profile) {
-            binding.pager.setCurrentItem(3);
+            position = 3;
+        }
+
+        if (position != -1) {
+            binding.pager.setCurrentItem(position);
+            // Nếu là tab giỏ hàng, thực hiện refresh
+            if (position == 2) {
+                Fragment fragment = getSupportFragmentManager().findFragmentByTag("f" + position);
+                if (fragment instanceof CartFragment) {
+                    ((CartFragment) fragment).refreshCart();
+                }
+            }
         }
         return true;
     }

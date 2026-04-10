@@ -19,12 +19,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.flowerboutique.BoutiqueApplication;
 import com.example.flowerboutique.R;
 import com.example.flowerboutique.ui.cart.CartAdapter;
+import com.example.flowerboutique.ui.cart.CartItem;
 import com.example.flowerboutique.ui.cart.CartViewModel;
 import com.example.flowerboutique.ui.makeorder.MakeOrderActivity;
 import com.example.flowerboutique.ui.profile.LoginRegisterFragment;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class CartFragment extends Fragment {
@@ -48,13 +51,23 @@ public class CartFragment extends Fragment {
         if (firebaseUser == null) {
             // Nếu chưa đăng nhập, hiển thị trang Login/Register
             fragmentManager.beginTransaction()
-                    .replace(R.id.main_cart_container, LoginRegisterFragment.class, null)
+                    .replace(R.id.main_cart_container, LoginRegisterFragment.class, null, "LOGIN_REGISTER")
                     .commit();
         } else {
             // Nếu đã đăng nhập, hiển thị nội dung giỏ hàng
             fragmentManager.beginTransaction()
-                    .replace(R.id.main_cart_container, CartContentFragment.class, null)
+                    .replace(R.id.main_cart_container, CartContentFragment.class, null, "CART_CONTENT")
                     .commit();
+        }
+    }
+
+    public void refreshCart() {
+        FirebaseUser user = application.getAppFirebase().getFirebaseAuth().getCurrentUser();
+        renderFragment(user); // Đảm bảo trạng thái đăng nhập/giỏ hàng đúng
+
+        Fragment fragment = getChildFragmentManager().findFragmentByTag("CART_CONTENT");
+        if (fragment instanceof CartContentFragment) {
+            ((CartContentFragment) fragment).refreshData();
         }
     }
 
@@ -80,11 +93,15 @@ public class CartFragment extends Fragment {
             initViews(view);
             setupRecyclerView();
 
-            // Khởi tạo ViewModel (sử dụng getActivity() để chia sẻ scope nếu cần, hoặc Fragment này tự quản lý)
+            // Khởi tạo ViewModel
             viewModel = new ViewModelProvider(this).get(CartViewModel.class);
 
             observeViewModel();
             setupClickEvents();
+        }
+
+        public void refreshData() {
+            // ViewModel tự động lắng nghe thay đổi từ Room qua MediatorLiveData trong Repository
         }
 
         private void initViews(View view) {
@@ -100,17 +117,17 @@ public class CartFragment extends Fragment {
 
             adapter.setActionListener(new CartAdapter.CartItemActionListener() {
                 @Override
-                public void onIncrease(com.example.flowerboutique.ui.cart.CartItem item) {
+                public void onIncrease(CartItem item) {
                     viewModel.increaseQuantity(item);
                 }
 
                 @Override
-                public void onDecrease(com.example.flowerboutique.ui.cart.CartItem item) {
+                public void onDecrease(CartItem item) {
                     viewModel.decreaseQuantity(item);
                 }
 
                 @Override
-                public void onRemove(com.example.flowerboutique.ui.cart.CartItem item) {
+                public void onRemove(CartItem item) {
                     viewModel.removeItem(item);
                 }
             });
@@ -130,6 +147,23 @@ public class CartFragment extends Fragment {
         private void setupClickEvents() {
             btnProceedToCheckout.setOnClickListener(v -> {
                 Intent intent = new Intent(getActivity(), MakeOrderActivity.class);
+
+                // Lấy danh sách và tổng tiền hiện tại từ ViewModel
+                List<CartItem> cartItems = viewModel.getCartListLiveData().getValue();
+                if (cartItems != null) {
+                    // Ép kiểu về ArrayList để truyền qua Intent
+                    ArrayList<CartItem> currentCartList = new ArrayList<>(cartItems);
+
+                    long currentTotalAmount = 0L;
+                    if (viewModel.getTotalPriceLiveData().getValue() != null) {
+                        currentTotalAmount = viewModel.getTotalPriceLiveData().getValue();
+                    }
+
+                    // Đóng gói dữ liệu gửi đi
+                    intent.putExtra("list_cart_items", currentCartList);
+                    intent.putExtra("total_amount", currentTotalAmount);
+                }
+
                 startActivity(intent);
             });
         }

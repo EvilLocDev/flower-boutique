@@ -107,10 +107,6 @@ public class ModifyProfileActivity extends AppCompatActivity {
 
         binding.ivAvatar.setClickable(true);
         binding.ivAvatar.setFocusable(true);
-
-        binding.ivAvatar.setOnClickListener(v -> {
-            pickImageLauncher.launch("image/*");
-        });
     }
 
     private void initProfile() {
@@ -144,6 +140,7 @@ public class ModifyProfileActivity extends AppCompatActivity {
                         String publicUrl = (String) resultData.get("secure_url");
                         updatedData.put("avatar", publicUrl);
                         saveProfileToFirestore(updatedData);
+                        setResult(RESULT_OK);
                     }
 
                     @Override
