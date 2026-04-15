@@ -93,6 +93,12 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            isProgressing.setValue(false);
+            Toast.makeText(SignUpActivity.this, "Email không hợp lệ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (password.length() < 6) {
             isProgressing.setValue(false);
             Toast.makeText(SignUpActivity.this, "Mật khẩu phải có ít nhất 6 ký tự", Toast.LENGTH_SHORT).show();
