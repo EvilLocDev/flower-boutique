@@ -97,7 +97,7 @@ public class AdminUserDetailActivity extends AppCompatActivity {
                 DocumentSnapshot snapshot = task.getResult();
                 Picasso.get().load(snapshot.getString("avatar")).into(binding.ivAvatar);
                 binding.edtName.setText(snapshot.getString("name"));
-                binding.edtPhoneNumber.setText(snapshot.getString("phone"));
+                binding.edtPhoneNumber.setText(snapshot.getString("phoneNumber"));
                 binding.birthday.setText(snapshot.getDate("birthday") != null ? dateFormat.format(snapshot.getDate("birthday")) : null);
                 binding.gender.setText(snapshot.getString("gender"), false);
                 binding.role.setText(snapshot.getString("role"), false);
