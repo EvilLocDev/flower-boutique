@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="serif"
         android:letterSpacing="0.15"
-        android:text="FLOWER BOUTIQUE"
+        android:text="BOUTIQUE"
         android:textColor="#AB886D"
         android:textSize="24sp"
         android:textStyle="bold"
