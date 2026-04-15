@@ -91,16 +91,21 @@ public class AdminOrderDetailActivity extends AppCompatActivity {
             if (orderSnapshot.exists()) {
                 orderIdTextView.setText("Mã đơn hàng: " + orderId);
 
-                DocumentReference userRef = (DocumentReference) orderSnapshot.get("user");
-                if (userRef != null) {
-                    userRef.get().addOnSuccessListener(userSnapshot -> {
+                // FIX: Lấy user_id kiểu String thay vì DocumentReference "user"
+                String userId = orderSnapshot.getString("user_id");
+                if (userId != null && !userId.equals("guest")) {
+                    db.collection("users").document(userId).get().addOnSuccessListener(userSnapshot -> {
                         if (userSnapshot.exists()) {
                             String customerName = userSnapshot.getString("name");
-                            customerNameTextView.setText("Tên khách hàng: " + customerName);
+                            customerNameTextView.setText("Tên khách hàng: " + (customerName != null ? customerName : "Chưa cập nhật tên"));
                         } else {
-                            customerNameTextView.setText("Tên khách hàng: N/A");
+                            customerNameTextView.setText("Tên khách hàng: User không tồn tại");
                         }
-                    });
+                    }).addOnFailureListener(e -> customerNameTextView.setText("Tên khách hàng: Lỗi tải dữ liệu"));
+                } else if ("guest".equals(userId)) {
+                    customerNameTextView.setText("Tên khách hàng: Khách vãng lai");
+                } else {
+                    customerNameTextView.setText("Tên khách hàng: N/A");
                 }
 
                 Map<String, Object> addressMap = (Map<String, Object>) orderSnapshot.get("address");
@@ -116,17 +121,13 @@ public class AdminOrderDetailActivity extends AppCompatActivity {
                 String status = orderSnapshot.getString("status");
                 orderStatusTextView.setText("Trạng thái: " + translateStatus(status));
 
-                // Đồng bộ logic button theo trạng thái mới
                 if ("pending".equals(status) || "paid".equals(status)) {
-                    // Chờ xử lý hoặc Đã thanh toán: Có thể từ chối hoặc hoàn thành
                     updateButtonState(rejectButton, true);
                     updateButtonState(completeButton, true);
                 } else if ("paying".equals(status)) {
-                    // Đang thanh toán: Chỉ cho phép hủy/từ chối, chưa cho bấm hoàn thành
                     updateButtonState(rejectButton, true);
                     updateButtonState(completeButton, false);
                 } else {
-                    // Đã xong (completed, denied, failed): Không làm gì thêm
                     updateButtonState(rejectButton, false);
                     updateButtonState(completeButton, false);
                 }
@@ -137,21 +138,28 @@ public class AdminOrderDetailActivity extends AppCompatActivity {
                     AtomicReference<Double> totalPrice = new AtomicReference<>(0.0);
                     for (Map<String, Object> productMap : products) {
                         DocumentReference productRef = (DocumentReference) productMap.get("product");
-                        productRef.get().addOnSuccessListener(productSnapshot -> {
-                            if (productSnapshot.exists()) {
-                                String productName = productSnapshot.getString("name");
-                                String productDescription = productSnapshot.getString("description");
-                                double productPrice = productSnapshot.getDouble("price");
-                                List<String> images = (List<String>) productSnapshot.get("image");
-                                String productImage = images != null && !images.isEmpty() ? images.get(0) : null;
-                                int quantity = ((Long) productMap.get("quantity")).intValue();
-                                totalPrice.updateAndGet(v -> v + productPrice * quantity);
+                        if (productRef != null) {
+                            productRef.get().addOnSuccessListener(productSnapshot -> {
+                                if (productSnapshot.exists()) {
+                                    String productName = productSnapshot.getString("name");
+                                    String productDescription = productSnapshot.getString("description");
+                                    Double pPrice = productSnapshot.getDouble("price");
+                                    double productPrice = (pPrice != null) ? pPrice : 0.0;
 
-                                productList.add(new AdminOrderDetailProduct(productName, productDescription, String.valueOf(productPrice), productImage, quantity));
-                                productAdapter.notifyDataSetChanged();
-                                totalPriceTextView.setText("Tổng tiền: " + String.format("%,.0f", totalPrice.get()) + " đ");
-                            }
-                        });
+                                    List<String> images = (List<String>) productSnapshot.get("image");
+                                    String productImage = images != null && !images.isEmpty() ? images.get(0) : null;
+                                    
+                                    Long qtyLong = (Long) productMap.get("quantity");
+                                    int quantity = (qtyLong != null) ? qtyLong.intValue() : 0;
+                                    
+                                    totalPrice.updateAndGet(v -> v + productPrice * quantity);
+
+                                    productList.add(new AdminOrderDetailProduct(productName, productDescription, String.valueOf(productPrice), productImage, quantity));
+                                    productAdapter.notifyDataSetChanged();
+                                    totalPriceTextView.setText("Tổng tiền: " + String.format("%,.0f", totalPrice.get()) + " đ");
+                                }
+                            });
+                        }
                     }
                 }
             }
@@ -189,7 +197,6 @@ public class AdminOrderDetailActivity extends AppCompatActivity {
     private void updateButtonState(Button button, boolean isEnabled) {
         button.setEnabled(isEnabled);
         if (isEnabled) {
-            // Kiểm tra nếu là nút từ chối thì màu đỏ, ngược lại (hoàn thành) thì màu xanh
             int colorRes = (button.getId() == R.id.reject_button) ? R.color.red : R.color.green;
             button.setBackgroundTintList(getResources().getColorStateList(colorRes, null));
             button.setTextColor(getResources().getColor(R.color.white, null));
